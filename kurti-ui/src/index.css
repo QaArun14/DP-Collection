@@ -1,0 +1,395 @@
+/* Luxury Indian Ethnic Wear Theme - Durgesh Collection */
+:root {
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-royal: 'Cinzel', serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* Color Palette */
+  --color-primary: #800020; /* Royal Maroon / Burgundy */
+  --color-primary-dark: #5c0017;
+  --color-primary-light: #9e1b32;
+  --color-gold: #c59b27;
+  --color-gold-light: #e6ca65;
+  --color-gold-dark: #9a7612;
+  --color-cream: #faf7f2;
+  --color-sand: #f3ede2;
+  --color-charcoal: #1c1917;
+  --color-muted: #78716c;
+  --color-border: #e7dfd5;
+  --color-emerald: #064e3b;
+  
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 12px -2px rgba(80, 20, 20, 0.08), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 12px 24px -4px rgba(80, 20, 20, 0.12), 0 4px 8px -2px rgba(0, 0, 0, 0.06);
+  --shadow-xl: 0 20px 35px -6px rgba(60, 10, 20, 0.18), 0 8px 12px -3px rgba(0, 0, 0, 0.08);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-cream);
+  color: var(--color-charcoal);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .font-serif {
+  font-family: var(--font-serif);
+}
+
+.font-royal {
+  font-family: var(--font-royal);
+  letter-spacing: 0.05em;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-sand);
+}
+::-webkit-scrollbar-thumb {
+  background: #cbb89d;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gold);
+}
+
+/* Container */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 0 2rem;
+  }
+}
+
+/* Glassmorphism & Effects */
+.glass-header {
+  background: rgba(250, 247, 242, 0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(231, 223, 213, 0.8);
+}
+
+/* Gold Gradient Shimmer */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #9a7612 0%, #d4af37 50%, #856108 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-bg {
+  background: linear-gradient(135deg, #d4af37 0%, #e6ca65 50%, #c59b27 100%);
+}
+
+.royal-maroon-gradient {
+  background: linear-gradient(135deg, #5c0017 0%, #800020 60%, #9e1b32 100%);
+}
+
+/* Animation utilities */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.8);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes badgePop {
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* ======================================================== */
+/* LUXURY ANIMATED BRAND IDENTITY SYSTEM - DURGESH COLLECTION */
+/* ======================================================== */
+
+@keyframes brandGoldShimmer {
+  0% {
+    background-position: 250% center;
+  }
+  100% {
+    background-position: -250% center;
+  }
+}
+
+@keyframes brandCrownFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    filter: drop-shadow(0 2px 6px rgba(212, 175, 55, 0.4));
+  }
+  50% {
+    transform: translateY(-3px) rotate(-1.5deg);
+    filter: drop-shadow(0 4px 14px rgba(212, 175, 55, 0.85));
+  }
+}
+
+@keyframes brandBadgePulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.45), 0 4px 12px rgba(128, 0, 32, 0.3);
+    border-color: rgba(212, 175, 55, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(212, 175, 55, 0.0), 0 6px 18px rgba(212, 175, 55, 0.4);
+    border-color: rgba(254, 240, 138, 0.95);
+  }
+}
+
+@keyframes brandTextGlow {
+  0%, 100% {
+    text-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  50% {
+    text-shadow: 0 0 18px rgba(212, 175, 55, 0.6), 0 0 6px rgba(128, 0, 32, 0.3);
+  }
+}
+
+/* Shimmering Metallic Gold-Maroon Logo Text for Light Backgrounds */
+.brand-shimmer-maroon {
+  background: linear-gradient(
+    110deg,
+    #5c0017 0%,
+    #800020 20%,
+    #b8860b 35%,
+    #fef08a 50%,
+    #d4af37 65%,
+    #800020 80%,
+    #5c0017 100%
+  );
+  background-size: 280% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: brandGoldShimmer 5s linear infinite;
+  display: inline-block;
+  letter-spacing: 0.09em;
+  font-family: var(--font-royal);
+  font-weight: 800;
+}
+
+/* Shimmering Metallic Pure Gold Logo Text for Dark / Royal Backgrounds */
+.brand-shimmer-gold {
+  background: linear-gradient(
+    110deg,
+    #9a7612 0%,
+    #d4af37 20%,
+    #fffbeb 40%,
+    #fef08a 50%,
+    #d4af37 65%,
+    #b8860b 80%,
+    #9a7612 100%
+  );
+  background-size: 280% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: brandGoldShimmer 4.5s linear infinite;
+  display: inline-block;
+  letter-spacing: 0.09em;
+  font-family: var(--font-royal);
+  font-weight: 800;
+}
+
+/* Animated Royal Monogram Shield / Emblem */
+.brand-emblem-shield {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #5c0017 0%, #800020 60%, #9e1b32 100%);
+  color: #fef08a;
+  border: 1.5px solid #d4af37;
+  border-radius: 10px;
+  animation: brandBadgePulse 3.5s infinite ease-in-out;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand-emblem-shield:hover {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.brand-crown-icon {
+  animation: brandCrownFloat 3s infinite ease-in-out;
+  display: inline-block;
+}
+
+.brand-tagline-glow {
+  color: #9a7612;
+  font-size: 0.65rem;
+  letter-spacing: 0.28em;
+  font-weight: 800;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.brand-tagline-glow::before,
+.brand-tagline-glow::after {
+  content: '◆';
+  font-size: 0.45rem;
+  color: #d4af37;
+  opacity: 0.8;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-drawer {
+  animation: slideInRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-pop {
+  animation: badgePop 0.25s ease-out;
+}
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: var(--color-primary);
+  color: #ffffff;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(128, 0, 32, 0.3);
+  text-decoration: none;
+}
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(128, 0, 32, 0.4);
+}
+
+.btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+  color: #1a1a1a;
+  font-weight: 700;
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+  text-decoration: none;
+}
+.btn-gold:hover {
+  filter: brightness(1.08);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: transparent;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-primary);
+  font-weight: 600;
+  padding: 0.7rem 1.4rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-outline:hover {
+  background: var(--color-primary);
+  color: #ffffff;
+}
+
+/* Image zoom on hover */
+.img-zoom-wrapper {
+  overflow: hidden;
+  position: relative;
+}
+.img-zoom-wrapper img {
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.img-zoom-wrapper:hover img {
+  transform: scale(1.08);
+}
+
+/* Badge styles */
+.badge-gold {
+  background: #fdf5e6;
+  color: #9a7612;
+  border: 1px solid #e7ca65;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-discount {
+  background: #be123c;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  letter-spacing: 0.02em;
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 10, 10, 0.65);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}

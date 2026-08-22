@@ -1,0 +1,10 @@
+{
+  "name": "durgesh-collection",
+  "version": "1.0.0",
+  "description": "Durgesh Collection - Full Stack E-Commerce & CMS Platform",
+  "scripts": {
+    "server": "npm --prefix server start",
+    "ui": "npm --prefix kurti-ui run dev",
+    "build": "npm --prefix kurti-ui run build"
+  }
+}
