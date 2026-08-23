@@ -43,9 +43,9 @@ function App() {
   // Admin Auth Status from session
   const [isAdminAuth, setIsAdminAuth] = useState(isAdminLoggedIn);
 
-  // Sync browser URL history
+  // Sync browser URL history & Hash routing
   useEffect(() => {
-    const handlePopState = () => {
+    const handleUrlChange = () => {
       const isPathAdmin =
         window.location.pathname.startsWith('/admin') ||
         window.location.hash.startsWith('#admin') ||
@@ -53,8 +53,12 @@ function App() {
       setCurrentView(isPathAdmin ? 'admin' : 'store');
     };
 
-    window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
   }, []);
 
   const navigateToAdmin = () => {
