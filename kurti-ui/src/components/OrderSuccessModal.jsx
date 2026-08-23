@@ -84,11 +84,21 @@ export default function OrderSuccessModal({ orderDetails, onClose }) {
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#57534e', marginBottom: '8px', paddingBottom: '8px', borderBottom: '1px dashed #d6d3d1' }}>
             <span>Order ID: <strong style={{ color: '#1c1917' }}>{orderDetails.orderId}</strong></span>
-            <span>Date: <strong>Today</strong></span>
+            <span>Method: <strong style={{ color: '#0052cc' }}>{orderDetails.paymentMethod || 'Razorpay Verified'}</strong></span>
           </div>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#57534e', marginBottom: '12px' }}>
-            <span>Razorpay Payment ID:</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: '#57534e', marginBottom: '8px' }}>
+            <span>Customer: <strong style={{ color: '#1c1917' }}>{orderDetails.customerName}</strong> ({orderDetails.customerPhone})</span>
+          </div>
+
+          {orderDetails.customerAddress && (
+            <div style={{ fontSize: '0.76rem', color: '#64748b', marginBottom: '10px', lineHeight: 1.3 }}>
+              📍 Deliver to: {orderDetails.customerAddress}, {orderDetails.customerCity} - {orderDetails.customerPin}
+            </div>
+          )}
+
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: '#57534e', marginBottom: '12px' }}>
+            <span>Payment ID:</span>
             <span style={{ fontFamily: 'monospace', color: '#047857', fontWeight: 700 }}>{orderDetails.paymentId}</span>
           </div>
 

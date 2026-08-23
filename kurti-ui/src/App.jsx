@@ -297,21 +297,23 @@ function App() {
     });
   };
 
-  // Handle successful Razorpay test payment
-  const handleRazorpaySuccess = (paymentId) => {
+  // Handle successful Razorpay test payment with real customer details
+  const handleRazorpaySuccess = (paymentId, customerDetails = {}) => {
     if (!razorpayModalData) return;
 
     const newOrder = {
       orderId: razorpayModalData.orderId,
       paymentId,
-      customerName: 'Priya Sharma',
-      customerPhone: storeSettings.whatsappNumber,
-      customerCity: 'Agra, UP',
+      customerName: customerDetails.customerName || 'Online Customer',
+      customerPhone: customerDetails.customerPhone || storeSettings.whatsappNumber,
+      customerAddress: customerDetails.customerAddress || '',
+      customerCity: customerDetails.customerCity || 'India',
+      customerPin: customerDetails.customerPin || '',
       total: razorpayModalData.amount,
       items: razorpayModalData.items,
       status: 'New',
       date: new Date().toLocaleString(),
-      paymentMethod: 'Razorpay Verified'
+      paymentMethod: customerDetails.paymentMethod || 'Razorpay Verified'
     };
 
     // Save order in live database & backend
@@ -323,7 +325,7 @@ function App() {
     setIsCartOpen(false);
     setQuickViewProduct(null);
     setCartItems([]);
-    showToast('cart', 'Payment Received!', `Order ${newOrder.orderId} confirmed via Razorpay.`);
+    showToast('cart', 'Payment Received!', `Order ${newOrder.orderId} confirmed for ${newOrder.customerName}.`);
   };
 
   const totalCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
