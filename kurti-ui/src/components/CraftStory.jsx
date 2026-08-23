@@ -60,8 +60,8 @@ export default function CraftStory({ craftContent = {} }) {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '48px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gap: '32px',
             alignItems: 'center'
           }}
         >
@@ -74,7 +74,7 @@ export default function CraftStory({ craftContent = {} }) {
                 boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
                 border: '2px solid rgba(212, 175, 55, 0.4)',
                 backgroundColor: 'rgba(28, 25, 23, 0.85)',
-                minHeight: '380px',
+                minHeight: '340px',
                 maxHeight: '460px',
                 position: 'relative',
                 display: 'flex',
@@ -116,27 +116,27 @@ export default function CraftStory({ craftContent = {} }) {
               <div
                 style={{
                   position: 'absolute',
-                  bottom: '16px',
-                  left: '16px',
-                  right: '16px',
+                  bottom: '12px',
+                  left: '12px',
+                  right: '12px',
                   zIndex: 10,
-                  backgroundColor: 'rgba(20, 16, 15, 0.92)',
+                  backgroundColor: 'rgba(20, 16, 15, 0.94)',
                   border: '1.5px solid #d4af37',
-                  borderRadius: '14px',
-                  padding: '12px 18px',
+                  borderRadius: '12px',
+                  padding: '10px 14px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '14px',
+                  gap: '10px',
                   boxShadow: '0 8px 24px rgba(0,0,0,0.7)',
                   backdropFilter: 'blur(10px)'
                 }}
               >
-                <span className="brand-crown-icon" style={{ fontSize: '1.4rem' }}>👑</span>
-                <span style={{ fontSize: '1.8rem', fontWeight: 800, color: '#fef08a', lineHeight: 1, fontFamily: 'var(--font-royal)' }}>
+                <span className="brand-crown-icon" style={{ fontSize: '1.2rem' }}>👑</span>
+                <span style={{ fontSize: '1.5rem', fontWeight: 800, color: '#fef08a', lineHeight: 1, fontFamily: 'var(--font-royal)' }}>
                   {badgeYears}
                 </span>
-                <div style={{ fontSize: '0.78rem', color: '#e7dfd5', lineHeight: 1.3, fontWeight: 600 }}>
+                <div style={{ fontSize: '0.75rem', color: '#e7dfd5', lineHeight: 1.3, fontWeight: 600 }}>
                   {badgeText}
                 </div>
               </div>

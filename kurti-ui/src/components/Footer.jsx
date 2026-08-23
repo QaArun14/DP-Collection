@@ -19,13 +19,13 @@ export default function Footer({ onCategoryClick, storeSettings, onOpenAdmin }) 
         <div
           style={{
             backgroundColor: '#292524',
-            borderRadius: '20px',
-            padding: '36px 32px',
-            marginBottom: '60px',
+            borderRadius: '16px',
+            padding: 'clamp(20px, 4vw, 36px) clamp(16px, 3.5vw, 32px)',
+            marginBottom: '48px',
             border: '1px solid #44403c',
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-            gap: '24px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+            gap: '20px',
             alignItems: 'center'
           }}
         >

@@ -78,6 +78,7 @@ export default function Navbar({
         {/* Quick Admin CMS Button in Header */}
         <button
           onClick={onOpenAdmin}
+          className="mobile-admin-btn"
           style={{
             backgroundColor: 'rgba(212, 175, 55, 0.2)',
             color: '#fef08a',
@@ -106,14 +107,14 @@ export default function Navbar({
         }}
       >
         <div
-          className="container"
+          className="container nav-container-mobile"
           style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
             paddingTop: '12px',
             paddingBottom: '12px',
-            gap: '16px'
+            gap: '10px'
           }}
         >
           {/* Mobile Menu Button */}
@@ -125,7 +126,8 @@ export default function Navbar({
               background: 'none',
               border: 'none',
               cursor: 'pointer',
-              color: 'var(--color-primary)'
+              color: 'var(--color-primary)',
+              padding: '4px'
             }}
             className="mobile-only-btn"
             aria-label="Toggle Navigation Menu"
@@ -140,25 +142,25 @@ export default function Navbar({
               textDecoration: 'none',
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
+              gap: '8px',
               transition: 'transform 0.25s ease'
             }}
             className="brand-container-hover"
           >
             {/* Animated Royal Monogram Emblem */}
             <div
-              className="brand-emblem-shield"
+              className="brand-emblem-shield brand-shield-mobile"
               style={{
-                width: '42px',
-                height: '42px',
+                width: '40px',
+                height: '40px',
                 flexShrink: 0
               }}
             >
               <div style={{ textAlign: 'center', lineHeight: 1 }}>
-                <span className="brand-crown-icon" style={{ fontSize: '0.68rem', color: '#fef08a', display: 'block', marginBottom: '1px' }}>
+                <span className="brand-crown-icon" style={{ fontSize: '0.65rem', color: '#fef08a', display: 'block', marginBottom: '1px' }}>
                   👑
                 </span>
-                <span style={{ fontSize: '0.85rem', fontWeight: 800, fontFamily: 'var(--font-royal)', color: '#ffffff', letterSpacing: '0.04em' }}>
+                <span style={{ fontSize: '0.8rem', fontWeight: 800, fontFamily: 'var(--font-royal)', color: '#ffffff', letterSpacing: '0.04em' }}>
                   DC
                 </span>
               </div>
@@ -166,13 +168,13 @@ export default function Navbar({
 
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
               <span
-                className="brand-shimmer-maroon"
+                className="brand-shimmer-maroon brand-logo-text"
                 style={{
-                  fontSize: 'clamp(1.2rem, 2.8vw, 1.55rem)',
+                  fontSize: 'clamp(1.05rem, 3.8vw, 1.55rem)',
                   lineHeight: 1.1,
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '6px'
+                  gap: '4px'
                 }}
               >
                 {storeSettings?.storeName?.toUpperCase() || 'DURGESH COLLECTION'}
@@ -636,6 +638,18 @@ export default function Navbar({
           }
         }
         @media (max-width: 480px) {
+          .nav-container-mobile {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+            gap: 6px !important;
+          }
+          .brand-shield-mobile {
+            width: 32px !important;
+            height: 32px !important;
+          }
+          .brand-logo-text {
+            font-size: 1.02rem !important;
+          }
           .cart-label {
             display: none;
           }

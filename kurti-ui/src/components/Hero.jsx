@@ -38,8 +38,8 @@ export default function Hero({ onExploreClick, onFestiveClick, heroContent = {} 
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-              gap: '40px',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+              gap: '32px',
               alignItems: 'center'
             }}
           >
@@ -295,8 +295,8 @@ export default function Hero({ onExploreClick, onFestiveClick, heroContent = {} 
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-              gap: '14px'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))',
+              gap: '10px'
             }}
           >
             {TRUST_PILLARS.map((pillar, idx) => (
@@ -305,15 +305,18 @@ export default function Hero({ onExploreClick, onFestiveClick, heroContent = {} 
                 style={{
                   display: 'flex',
                   alignItems: 'flex-start',
-                  gap: '14px',
-                  padding: '8px 12px'
+                  gap: '10px',
+                  padding: '6px 8px',
+                  backgroundColor: '#fafaf9',
+                  borderRadius: '10px',
+                  border: '1px solid #f5f5f4'
                 }}
               >
                 <div
                   style={{
-                    width: '46px',
-                    height: '46px',
-                    borderRadius: '12px',
+                    width: '38px',
+                    height: '38px',
+                    borderRadius: '10px',
                     backgroundColor: 'rgba(128, 0, 32, 0.07)',
                     display: 'flex',
                     alignItems: 'center',
