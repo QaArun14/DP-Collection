@@ -122,13 +122,7 @@ export default function Testimonials({ reviews = [], instaPosts = [], instagramH
           </p>
         </div>
 
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '16px'
-          }}
-        >
+        <div className="lookbook-responsive-grid">
           {displayPosts.map((post, idx) => (
             <div
               key={post.id || idx}
@@ -136,7 +130,7 @@ export default function Testimonials({ reviews = [], instaPosts = [], instagramH
                 position: 'relative',
                 borderRadius: '12px',
                 overflow: 'hidden',
-                height: '240px',
+                height: 'clamp(180px, 24vh, 240px)',
                 cursor: 'pointer'
               }}
               className="img-zoom-wrapper"

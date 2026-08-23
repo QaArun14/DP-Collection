@@ -221,7 +221,7 @@ export default function Navbar({
           {/* Action Icons (Search, Wishlist, Cart) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {/* Enhanced Search Input Box with Live Autocomplete Dropdown */}
-            <div style={{ position: 'relative' }}>
+            <div className="header-desktop-search" style={{ position: 'relative' }}>
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
@@ -619,12 +619,28 @@ export default function Navbar({
             width: 220px !important;
           }
         }
+        @media (max-width: 899px) {
+          .desktop-nav-links {
+            display: none !important;
+          }
+          .mobile-only-btn {
+            display: flex !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .header-desktop-search {
+            display: none !important;
+          }
+          .brand-logo-text {
+            font-size: 1.15rem !important;
+          }
+        }
         @media (max-width: 480px) {
           .cart-label {
             display: none;
           }
-          .search-container {
-            width: 140px !important;
+          .announcement-text {
+            font-size: 0.72rem !important;
           }
         }
       `}</style>

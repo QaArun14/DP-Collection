@@ -99,9 +99,9 @@ export default function QuickViewModal({
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-            gap: '30px',
-            padding: '28px'
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+            gap: 'clamp(16px, 3.5vw, 30px)',
+            padding: 'clamp(16px, 3.5vw, 28px)'
           }}
         >
           {/* Left Column: Image Gallery */}
@@ -110,7 +110,7 @@ export default function QuickViewModal({
               style={{
                 borderRadius: '16px',
                 overflow: 'hidden',
-                height: '420px',
+                height: 'clamp(260px, 38vh, 420px)',
                 backgroundColor: '#f5f5f4',
                 marginBottom: '12px'
               }}

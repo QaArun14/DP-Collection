@@ -74,16 +74,7 @@ export default function ProductGrid({
         </div>
 
         {/* Category Pill Navigation Tabs */}
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '10px',
-            flexWrap: 'wrap',
-            marginBottom: '30px'
-          }}
-        >
+        <div className="filter-pills-scroll" style={{ marginBottom: '24px' }}>
           {CATEGORIES.map((cat) => {
             const isSelected = selectedCategory === cat.id;
             return (
@@ -253,13 +244,7 @@ export default function ProductGrid({
           </div>
         ) : (
           /* Product Grid */
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))',
-              gap: '26px'
-            }}
-          >
+          <div className="products-responsive-grid">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}

@@ -64,8 +64,8 @@ export default function Footer({ onCategoryClick, storeSettings, onOpenAdmin }) 
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubscribe} style={{ display: 'flex', gap: '10px' }}>
-                <div style={{ position: 'relative', flex: 1 }}>
+              <form onSubmit={handleSubscribe} style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
                   <input
                     type="email"
                     required
@@ -86,7 +86,7 @@ export default function Footer({ onCategoryClick, storeSettings, onOpenAdmin }) 
                 </div>
                 <button
                   type="submit"
-                  className="btn-gold"
+                  className="btn-gold btn-mobile-full"
                   style={{ padding: '12px 22px', fontSize: '0.85rem', whiteSpace: 'nowrap' }}
                 >
                   <Send size={15} /> Claim 15% Off
@@ -100,8 +100,8 @@ export default function Footer({ onCategoryClick, storeSettings, onOpenAdmin }) 
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: '40px',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '30px',
             paddingBottom: '48px',
             borderBottom: '1px solid #292524'
           }}

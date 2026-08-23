@@ -84,13 +84,7 @@ export default function CategoryShowcase({ onSelectCategory, selectedCategory, p
         </div>
 
         {/* Category Cards Grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-            gap: '20px'
-          }}
-        >
+        <div className="categories-responsive-grid">
           {displayCards.map((cat) => {
             const isSelected = selectedCategory === cat.id;
             return (
@@ -102,7 +96,7 @@ export default function CategoryShowcase({ onSelectCategory, selectedCategory, p
                   borderRadius: '16px',
                   overflow: 'hidden',
                   cursor: 'pointer',
-                  height: '340px',
+                  height: 'clamp(240px, 32vh, 340px)',
                   backgroundColor: '#f5f0eb',
                   boxShadow: isSelected
                     ? '0 0 0 3px var(--color-primary), 0 10px 25px rgba(128,0,32,0.3)'

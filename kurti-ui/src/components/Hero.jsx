@@ -103,14 +103,14 @@ export default function Hero({ onExploreClick, onFestiveClick, heroContent = {} 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', marginBottom: '32px' }}>
                 <button
                   onClick={onExploreClick}
-                  className="btn-primary"
+                  className="btn-primary btn-mobile-full"
                   style={{ fontSize: '0.95rem', padding: '14px 28px' }}
                 >
                   {exploreBtnText} <ArrowRight size={18} />
                 </button>
                 <button
                   onClick={onFestiveClick}
-                  className="btn-gold"
+                  className="btn-gold btn-mobile-full"
                   style={{ fontSize: '0.95rem', padding: '14px 26px' }}
                 >
                   {festiveBtnText}
@@ -166,8 +166,8 @@ export default function Hero({ onExploreClick, onFestiveClick, heroContent = {} 
                   boxShadow: '0 25px 50px -12px rgba(92, 0, 23, 0.25)',
                   border: '4px solid #ffffff',
                   backgroundColor: '#fbf9f5',
-                  minHeight: '520px',
-                  maxHeight: '580px',
+                  minHeight: 'clamp(340px, 50vh, 520px)',
+                  maxHeight: 'clamp(380px, 60vh, 580px)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center'
@@ -196,7 +196,7 @@ export default function Hero({ onExploreClick, onFestiveClick, heroContent = {} 
                     position: 'relative',
                     zIndex: 2,
                     maxWidth: '100%',
-                    maxHeight: '560px',
+                    maxHeight: 'clamp(360px, 58vh, 560px)',
                     width: imageFit === 'cover' ? '100%' : 'auto',
                     height: imageFit === 'cover' ? '100%' : 'auto',
                     objectFit: imageFit === 'cover' ? 'cover' : 'contain',
@@ -295,8 +295,8 @@ export default function Hero({ onExploreClick, onFestiveClick, heroContent = {} 
           <div
             style={{
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-              gap: '20px'
+              gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+              gap: '14px'
             }}
           >
             {TRUST_PILLARS.map((pillar, idx) => (

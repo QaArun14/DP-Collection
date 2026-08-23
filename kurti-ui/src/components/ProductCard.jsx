@@ -52,7 +52,7 @@ export default function ProductCard({
       <div
         style={{
           position: 'relative',
-          height: '340px',
+          height: 'clamp(200px, 30vh, 340px)',
           overflow: 'hidden',
           backgroundColor: '#f5f5f4',
           cursor: 'pointer'
@@ -187,9 +187,9 @@ export default function ProductCard({
       </div>
 
       {/* Product Information Details */}
-      <div style={{ padding: '16px', display: 'flex', flexDirection: 'column', flex: 1 }}>
+      <div style={{ padding: 'clamp(10px, 2.5vw, 16px)', display: 'flex', flexDirection: 'column', flex: 1 }}>
         {/* Rating & Fabric Pill */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
             <div
               style={{
@@ -197,30 +197,34 @@ export default function ProductCard({
                 color: '#b45309',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '3px',
-                padding: '2px 6px',
-                borderRadius: '6px',
-                fontSize: '0.72rem',
+                gap: '2px',
+                padding: '2px 5px',
+                borderRadius: '5px',
+                fontSize: '0.7rem',
                 fontWeight: 700
               }}
             >
               <span>{product.rating}</span>
-              <Star size={11} fill="#b45309" color="#b45309" />
+              <Star size={10} fill="#b45309" color="#b45309" />
             </div>
-            <span style={{ fontSize: '0.72rem', color: '#a8a29e' }}>({product.reviewCount})</span>
+            <span style={{ fontSize: '0.68rem', color: '#a8a29e' }}>({product.reviewCount})</span>
           </div>
 
           <span
             style={{
-              fontSize: '0.72rem',
+              fontSize: '0.68rem',
               color: '#065f46',
               backgroundColor: '#ecfdf5',
-              padding: '2px 6px',
+              padding: '2px 5px',
               borderRadius: '4px',
-              fontWeight: 600
+              fontWeight: 600,
+              maxWidth: '80px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis'
             }}
           >
-            {product.fabric.split(' ')[0]} {product.fabric.split(' ')[1] || ''}
+            {product.fabric?.split(' ')[0]} {product.fabric?.split(' ')[1] || ''}
           </span>
         </div>
 
@@ -228,17 +232,17 @@ export default function ProductCard({
         <h3
           onClick={() => onQuickView(product)}
           style={{
-            fontSize: '1rem',
+            fontSize: 'clamp(0.85rem, 2.2vw, 1rem)',
             fontWeight: 700,
             color: '#1c1917',
-            margin: '0 0 6px',
-            lineHeight: 1.35,
+            margin: '0 0 4px',
+            lineHeight: 1.3,
             cursor: 'pointer',
             overflow: 'hidden',
             display: '-webkit-box',
             WebkitLineClamp: 2,
             WebkitBoxOrient: 'vertical',
-            minHeight: '2.7em'
+            minHeight: '2.6em'
           }}
         >
           {product.name}
@@ -306,19 +310,19 @@ export default function ProductCard({
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-              <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#1c1917' }}>
-                ₹{product.price.toLocaleString()}
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: '5px' }}>
+              <span style={{ fontSize: 'clamp(1rem, 2.8vw, 1.25rem)', fontWeight: 800, color: '#1c1917' }}>
+                ₹{product.price?.toLocaleString()}
               </span>
-              <span style={{ fontSize: '0.8rem', color: '#a8a29e', textDecoration: 'line-through' }}>
-                ₹{product.originalPrice.toLocaleString()}
+              <span style={{ fontSize: '0.75rem', color: '#a8a29e', textDecoration: 'line-through' }}>
+                ₹{product.originalPrice?.toLocaleString()}
               </span>
             </div>
-            <span className="badge-discount">{product.discount}</span>
+            <span className="badge-discount" style={{ fontSize: '0.65rem', padding: '2px 4px' }}>{product.discount}</span>
           </div>
 
           {/* Action Row: Add to Bag + WhatsApp Direct Order */}
-          <div style={{ display: 'flex', gap: '8px' }}>
+          <div style={{ display: 'flex', gap: '6px' }}>
             <button
               onClick={handleAddToCart}
               style={{
@@ -327,13 +331,13 @@ export default function ProductCard({
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '8px',
-                padding: '8px 12px',
-                fontSize: '0.8rem',
+                padding: '7px clamp(4px, 1.5vw, 10px)',
+                fontSize: 'clamp(0.72rem, 1.8vw, 0.8rem)',
                 fontWeight: 700,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '5px',
+                gap: '4px',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
                 boxShadow: '0 2px 6px rgba(128,0,32,0.2)'
@@ -341,11 +345,11 @@ export default function ProductCard({
             >
               {justAdded ? (
                 <>
-                  <Check size={15} /> Added
+                  <Check size={14} /> Added
                 </>
               ) : (
                 <>
-                  <ShoppingBag size={15} /> Add to Bag
+                  <ShoppingBag size={14} /> Add
                 </>
               )}
             </button>
@@ -357,20 +361,20 @@ export default function ProductCard({
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: '8px',
-                padding: '8px 12px',
-                fontSize: '0.8rem',
+                padding: '7px clamp(4px, 1.5vw, 10px)',
+                fontSize: 'clamp(0.72rem, 1.8vw, 0.8rem)',
                 fontWeight: 700,
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '4px',
+                gap: '3px',
                 cursor: 'pointer',
                 boxShadow: '0 2px 6px rgba(37, 211, 102, 0.3)',
                 transition: 'all 0.2s ease'
               }}
               title="Order on WhatsApp"
             >
-              <MessageCircle size={15} /> WhatsApp
+              <MessageCircle size={14} /> WhatsApp
             </button>
           </div>
         </div>
