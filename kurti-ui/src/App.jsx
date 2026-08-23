@@ -16,6 +16,7 @@ import WhatsAppWidget from './components/WhatsAppWidget';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminLogin from './components/admin/AdminLogin';
 import { isAdminLoggedIn, setAdminLoggedIn } from './utils/storage';
+import { PRODUCTS, TESTIMONIALS, PROMO_CODES } from './data/products';
 
 import {
   apiFetchProducts,
@@ -81,12 +82,12 @@ function App() {
     navigateToStore();
   };
 
-  // Dynamic CMS State (Loaded directly from Backend API)
-  const [products, setProducts] = useState([]);
+  // Dynamic CMS State (Loaded directly from Backend API with local fallback)
+  const [products, setProducts] = useState(PRODUCTS);
   const [orders, setOrders] = useState([]);
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState(TESTIMONIALS);
   const [instaPosts, setInstaPosts] = useState([]);
-  const [coupons, setCoupons] = useState({});
+  const [coupons, setCoupons] = useState(PROMO_CODES);
   const [landingContent, setLandingContent] = useState(null);
   const [storeSettings, setStoreSettings] = useState({
     storeName: 'Durgesh Collection',
@@ -113,13 +114,27 @@ function App() {
         apiFetchLanding()
       ]);
 
-      if (prods.status === 'fulfilled' && prods.value) setProducts(prods.value);
-      if (ords.status === 'fulfilled' && ords.value) setOrders(ords.value);
-      if (revs.status === 'fulfilled' && revs.value) setReviews(revs.value);
-      if (insta.status === 'fulfilled' && insta.value) setInstaPosts(insta.value);
-      if (coup.status === 'fulfilled' && coup.value) setCoupons(coup.value);
-      if (sett.status === 'fulfilled' && sett.value?.storeName) setStoreSettings(sett.value);
-      if (land.status === 'fulfilled' && land.value) setLandingContent(land.value);
+      if (prods.status === 'fulfilled' && Array.isArray(prods.value) && prods.value.length > 0) {
+        setProducts(prods.value);
+      }
+      if (ords.status === 'fulfilled' && Array.isArray(ords.value)) {
+        setOrders(ords.value);
+      }
+      if (revs.status === 'fulfilled' && Array.isArray(revs.value) && revs.value.length > 0) {
+        setReviews(revs.value);
+      }
+      if (insta.status === 'fulfilled' && Array.isArray(insta.value) && insta.value.length > 0) {
+        setInstaPosts(insta.value);
+      }
+      if (coup.status === 'fulfilled' && coup.value && Object.keys(coup.value).length > 0) {
+        setCoupons(coup.value);
+      }
+      if (sett.status === 'fulfilled' && sett.value?.storeName) {
+        setStoreSettings(sett.value);
+      }
+      if (land.status === 'fulfilled' && land.value) {
+        setLandingContent(land.value);
+      }
     }
     loadBackendData();
   }, []);

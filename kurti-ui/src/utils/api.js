@@ -1,4 +1,20 @@
-export const API_BASE_URL = 'http://localhost:5000/api';
+import { PRODUCTS, TESTIMONIALS, PROMO_CODES } from '../data/products';
+
+// Dynamic Backend URL: auto-detects host IP for mobile devices on local WiFi, or uses VITE_API_URL for production
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host && host !== 'localhost' && host !== '127.0.0.1') {
+      return `http://${host}:5000/api`;
+    }
+  }
+  return 'http://localhost:5000/api';
+};
+
+export const API_BASE_URL = getApiBaseUrl();
 
 /**
  * Upload an image file to the Backend Multer Upload endpoint
@@ -15,7 +31,7 @@ export async function uploadImageToBackend(file) {
 
     if (response.ok) {
       const data = await response.json();
-      return data.url; // e.g. 'http://localhost:5000/uploads/kurti-1782910.jpg'
+      return data.url;
     }
   } catch (err) {
     console.warn('Backend upload server not reachable', err);
@@ -30,12 +46,15 @@ export async function apiFetchProducts() {
   try {
     const res = await fetch(`${API_BASE_URL}/products`);
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        return data;
+      }
     }
   } catch (e) {
-    console.warn('Could not fetch products from backend', e);
+    console.warn('Could not fetch products from backend, using local catalog fallback.', e);
   }
-  return [];
+  return PRODUCTS;
 }
 
 export async function apiCreateProduct(product) {
@@ -124,12 +143,13 @@ export async function apiFetchReviews() {
   try {
     const res = await fetch(`${API_BASE_URL}/reviews`);
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) return data;
     }
   } catch (e) {
-    console.warn('Could not fetch reviews from backend', e);
+    console.warn('Could not fetch reviews from backend, using fallback', e);
   }
-  return [];
+  return TESTIMONIALS;
 }
 
 export async function apiCreateReview(review) {
@@ -157,7 +177,8 @@ export async function apiFetchInsta() {
   try {
     const res = await fetch(`${API_BASE_URL}/insta`);
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) return data;
     }
   } catch (e) {
     console.warn('Could not fetch insta posts from backend', e);
@@ -190,12 +211,13 @@ export async function apiFetchCoupons() {
   try {
     const res = await fetch(`${API_BASE_URL}/coupons`);
     if (res.ok) {
-      return await res.json();
+      const data = await res.json();
+      if (data && Object.keys(data).length > 0) return data;
     }
   } catch (e) {
     console.warn('Could not fetch coupons from backend', e);
   }
-  return {};
+  return PROMO_CODES;
 }
 
 export async function apiCreateCoupon(coupon) {
