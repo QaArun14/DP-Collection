@@ -396,10 +396,25 @@ app.delete('/api/products/:id', async (req, res) => {
   try {
     const id = String(req.params.id);
     if (isMongoConnected) {
-      await Product.deleteOne({ id });
-      return res.json({ success: true, message: `Product ${id} deleted` });
+      await Product.deleteMany({
+        $or: [
+          { id: id },
+          { id: Number(id) || -99999 },
+          ...(mongoose.Types.ObjectId.isValid(id) ? [{ _id: id }] : [])
+        ]
+      });
     }
-    res.json({ success: true, message: `Product ${id} deleted` });
+
+    try {
+      if (fs.existsSync(DATA_FILE)) {
+        const raw = fs.readFileSync(DATA_FILE, 'utf8');
+        const data = JSON.parse(raw);
+        data.products = (data.products || []).filter((p) => String(p.id) !== id);
+        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+      }
+    } catch (e) {}
+
+    res.json({ success: true, message: `Product ${id} deleted successfully` });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -498,9 +513,24 @@ app.delete('/api/reviews/:id', async (req, res) => {
   try {
     const id = String(req.params.id);
     if (isMongoConnected) {
-      await Review.deleteOne({ id });
-      return res.json({ success: true, message: `Review ${id} deleted` });
+      await Review.deleteMany({
+        $or: [
+          { id: id },
+          { id: Number(id) || -99999 },
+          ...(mongoose.Types.ObjectId.isValid(id) ? [{ _id: id }] : [])
+        ]
+      });
     }
+
+    try {
+      if (fs.existsSync(DATA_FILE)) {
+        const raw = fs.readFileSync(DATA_FILE, 'utf8');
+        const data = JSON.parse(raw);
+        data.reviews = (data.reviews || []).filter((r) => String(r.id) !== id);
+        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+      }
+    } catch (e) {}
+
     res.json({ success: true, message: `Review ${id} deleted` });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -546,9 +576,24 @@ app.delete('/api/insta/:id', async (req, res) => {
   try {
     const id = String(req.params.id);
     if (isMongoConnected) {
-      await InstaPost.deleteOne({ id });
-      return res.json({ success: true, message: `Post ${id} deleted` });
+      await InstaPost.deleteMany({
+        $or: [
+          { id: id },
+          { id: Number(id) || -99999 },
+          ...(mongoose.Types.ObjectId.isValid(id) ? [{ _id: id }] : [])
+        ]
+      });
     }
+
+    try {
+      if (fs.existsSync(DATA_FILE)) {
+        const raw = fs.readFileSync(DATA_FILE, 'utf8');
+        const data = JSON.parse(raw);
+        data.instaPosts = (data.instaPosts || []).filter((p) => String(p.id) !== id);
+        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+      }
+    } catch (e) {}
+
     res.json({ success: true, message: `Post ${id} deleted` });
   } catch (err) {
     res.status(500).json({ error: err.message });
