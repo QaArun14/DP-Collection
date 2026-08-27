@@ -60,7 +60,11 @@ export default function ProductCard({
         onClick={() => onQuickView(product)}
       >
         <img
-          src={isHovered && product.secondaryImage ? product.secondaryImage : product.primaryImage}
+          src={
+            isHovered && (product.images?.[1] || product.secondaryImage)
+              ? (product.images?.[1] || product.secondaryImage)
+              : (product.images?.[0] || product.primaryImage)
+          }
           alt={product.name}
           style={{
             width: '100%',

@@ -622,7 +622,14 @@ export default function AdminDashboard({
                     {filteredProducts.map((p) => (
                       <tr key={p.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
                         <td style={{ padding: '10px 16px' }}>
-                          <img src={p.primaryImage} alt={p.name} style={{ width: '48px', height: '62px', borderRadius: '6px', objectFit: 'cover' }} />
+                          <div style={{ position: 'relative', width: '48px' }}>
+                            <img src={p.primaryImage || p.images?.[0]} alt={p.name} style={{ width: '48px', height: '62px', borderRadius: '6px', objectFit: 'cover' }} />
+                            {(p.images?.length || 1) > 1 && (
+                              <span style={{ fontSize: '0.62rem', backgroundColor: 'rgba(15, 23, 42, 0.75)', color: '#ffffff', padding: '1px 4px', borderRadius: '3px', position: 'absolute', bottom: '2px', right: '2px', fontWeight: 700 }}>
+                                📸 {p.images.length}
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td style={{ padding: '10px 16px' }}>
                           <div style={{ fontWeight: 700, color: '#0f172a' }}>{p.name}</div>

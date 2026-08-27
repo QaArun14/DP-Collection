@@ -49,6 +49,7 @@ const ProductSchema = new mongoose.Schema(
     sleeves: { type: String, default: '' },
     stock: { type: Number, default: 10 },
     sizes: { type: [String], default: ['S', 'M', 'L', 'XL', 'XXL'] },
+    images: { type: [String], default: [] },
     primaryImage: { type: String, required: true },
     secondaryImage: { type: String, default: '' },
     description: { type: String, default: '' },

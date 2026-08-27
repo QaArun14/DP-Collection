@@ -19,10 +19,10 @@ export default function QuickViewModal({
   const [quantity, setQuantity] = useState(1);
   const [showAddedMsg, setShowAddedMsg] = useState(false);
 
-  const images = [
-    product.primaryImage,
-    product.secondaryImage || product.primaryImage
-  ];
+  const images =
+    Array.isArray(product.images) && product.images.length > 0
+      ? product.images.filter((img) => img && typeof img === 'string' && img.trim() !== '')
+      : [product.primaryImage, product.secondaryImage].filter(Boolean);
 
   const handleAddToCart = () => {
     onAddToCart({
@@ -126,22 +126,25 @@ export default function QuickViewModal({
               />
             </div>
 
-            {/* Thumbnail Switcher */}
-            <div style={{ display: 'flex', gap: '10px' }}>
+            {/* Thumbnail Switcher (Up to 6 Product Photos) */}
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {images.map((img, idx) => (
                 <button
                   key={idx}
                   onClick={() => setSelectedImg(img)}
                   style={{
-                    border: selectedImg === img ? '2px solid var(--color-primary)' : '1px solid var(--color-border)',
+                    border: selectedImg === img ? '2.5px solid var(--color-primary)' : '1px solid var(--color-border)',
                     borderRadius: '8px',
                     overflow: 'hidden',
-                    width: '64px',
-                    height: '64px',
+                    width: '54px',
+                    height: '54px',
                     padding: 0,
                     cursor: 'pointer',
-                    backgroundColor: '#fff'
+                    backgroundColor: '#fff',
+                    boxShadow: selectedImg === img ? '0 2px 8px rgba(128,0,32,0.25)' : 'none',
+                    transition: 'all 0.15s ease'
                   }}
+                  title={`View Angle ${idx + 1}`}
                 >
                   <img src={img} alt={`thumb ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </button>
