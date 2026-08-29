@@ -19,9 +19,11 @@ export default function ProductGrid({
   // Filter & Sort Logic
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
-      // Category filter
+      // Category filter (safe case-insensitive)
       const matchesCategory =
-        selectedCategory === 'all' || p.category === selectedCategory;
+        !selectedCategory ||
+        selectedCategory === 'all' ||
+        (p.category || '').toLowerCase().trim() === selectedCategory.toLowerCase().trim();
 
       // Search query filter
       const query = (searchQuery || '').toLowerCase().trim();

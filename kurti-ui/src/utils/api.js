@@ -40,24 +40,52 @@ export async function uploadImageToBackend(file) {
 }
 
 // ==========================================
-// 1. PRODUCTS REST API
+// 1. PRODUCTS REST API (DUAL PERSISTENCE)
 // ==========================================
+const STORAGE_KEY_PRODUCTS = 'durgesh_collection_products_v3';
+
+function getLocalStoredProducts() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_PRODUCTS);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {}
+  return PRODUCTS;
+}
+
+function saveLocalStoredProducts(products) {
+  try {
+    if (Array.isArray(products) && products.length > 0) {
+      localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
+    }
+  } catch (e) {}
+}
+
 export async function apiFetchProducts() {
   try {
     const res = await fetch(`${API_BASE_URL}/products`);
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) {
+        saveLocalStoredProducts(data);
         return data;
       }
     }
   } catch (e) {
     console.warn('Could not fetch products from backend, using local catalog fallback.', e);
   }
-  return PRODUCTS;
+  return getLocalStoredProducts();
 }
 
 export async function apiCreateProduct(product) {
+  // 1. Instantly save in local storage so it immediately shows on storefront
+  const current = getLocalStoredProducts();
+  const updated = [product, ...current.filter((p) => String(p.id) !== String(product.id))];
+  saveLocalStoredProducts(updated);
+
+  // 2. Sync to Backend / MongoDB
   try {
     const res = await fetch(`${API_BASE_URL}/products`, {
       method: 'POST',
@@ -72,6 +100,12 @@ export async function apiCreateProduct(product) {
 }
 
 export async function apiUpdateProduct(id, product) {
+  // 1. Instantly update in local storage
+  const current = getLocalStoredProducts();
+  const updated = current.map((p) => (String(p.id) === String(id) ? product : p));
+  saveLocalStoredProducts(updated);
+
+  // 2. Sync to Backend / MongoDB
   try {
     const res = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: 'PUT',
@@ -86,6 +120,12 @@ export async function apiUpdateProduct(id, product) {
 }
 
 export async function apiDeleteProduct(id) {
+  // 1. Instantly remove from local storage
+  const current = getLocalStoredProducts();
+  const updated = current.filter((p) => String(p.id) !== String(id));
+  saveLocalStoredProducts(updated);
+
+  // 2. Sync to Backend / MongoDB
   try {
     const res = await fetch(`${API_BASE_URL}/products/${id}`, { method: 'DELETE' });
     return res.ok;

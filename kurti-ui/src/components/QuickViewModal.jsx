@@ -13,22 +13,25 @@ export default function QuickViewModal({
 }) {
   if (!product) return null;
 
-  const [selectedImg, setSelectedImg] = useState(product.primaryImage);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0] || 'M');
-  const [selectedColor, setSelectedColor] = useState(product.colors[0] || { name: 'Standard', hex: '#800020' });
+  const sizesList = Array.isArray(product?.sizes) && product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL'];
+  const colorsList = Array.isArray(product?.colors) && product.colors.length > 0 ? product.colors : [{ name: 'Standard', hex: '#800020' }];
+
+  const [selectedImg, setSelectedImg] = useState(product?.primaryImage || product?.images?.[0] || '');
+  const [selectedSize, setSelectedSize] = useState(sizesList[0] || 'M');
+  const [selectedColor, setSelectedColor] = useState(colorsList[0] || { name: 'Standard', hex: '#800020' });
   const [quantity, setQuantity] = useState(1);
   const [showAddedMsg, setShowAddedMsg] = useState(false);
 
   const images =
-    Array.isArray(product.images) && product.images.length > 0
+    Array.isArray(product?.images) && product.images.length > 0
       ? product.images.filter((img) => img && typeof img === 'string' && img.trim() !== '')
-      : [product.primaryImage, product.secondaryImage].filter(Boolean);
+      : [product?.primaryImage, product?.secondaryImage].filter(Boolean);
 
   const handleAddToCart = () => {
     onAddToCart({
       ...product,
       selectedSize,
-      selectedColor: selectedColor.name,
+      selectedColor: selectedColor?.name || 'Standard',
       quantity
     });
     setShowAddedMsg(true);
@@ -39,7 +42,7 @@ export default function QuickViewModal({
     const item = {
       ...product,
       selectedSize,
-      selectedColor: selectedColor.name,
+      selectedColor: selectedColor?.name || 'Standard',
       quantity
     };
     if (onRazorpayDirectPay) {
@@ -281,7 +284,7 @@ export default function QuickViewModal({
                 </span>
               </div>
               <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                {product.sizes.map((s) => {
+                {sizesList.map((s) => {
                   const isSel = selectedSize === s;
                   return (
                     <button

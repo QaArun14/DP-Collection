@@ -9,16 +9,20 @@ export default function ProductCard({
   onAddToCart,
   onQuickView
 }) {
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0] || 'M');
+  const sizesList = Array.isArray(product?.sizes) && product.sizes.length > 0 ? product.sizes : ['S', 'M', 'L', 'XL'];
+  const [selectedSize, setSelectedSize] = useState(sizesList[0] || 'M');
   const [isHovered, setIsHovered] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
+
+  const primaryPhoto = product?.primaryImage || product?.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80';
+  const secondaryPhoto = product?.images?.[1] || product?.secondaryImage || primaryPhoto;
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
     onAddToCart({
       ...product,
       selectedSize,
-      selectedColor: product.colors[0]?.name || 'Standard'
+      selectedColor: product?.colors?.[0]?.name || 'Standard'
     });
     setJustAdded(true);
     setTimeout(() => setJustAdded(false), 1500);
@@ -26,7 +30,8 @@ export default function ProductCard({
 
   const handleWhatsAppOrder = (e) => {
     e.stopPropagation();
-    const url = getProductWhatsAppUrl(product, selectedSize, product.colors[0]?.name || '');
+    const colorName = product?.colors?.[0]?.name || '';
+    const url = getProductWhatsAppUrl(product, selectedSize, colorName);
     window.open(url, '_blank');
   };
 
@@ -60,12 +65,8 @@ export default function ProductCard({
         onClick={() => onQuickView(product)}
       >
         <img
-          src={
-            isHovered && (product.images?.[1] || product.secondaryImage)
-              ? (product.images?.[1] || product.secondaryImage)
-              : (product.images?.[0] || product.primaryImage)
-          }
-          alt={product.name}
+          src={isHovered ? secondaryPhoto : primaryPhoto}
+          alt={product?.name || 'Kurti'}
           style={{
             width: '100%',
             height: '100%',
@@ -273,7 +274,7 @@ export default function ProductCard({
             <span style={{ fontSize: '0.7rem', fontWeight: 700, color: 'var(--color-primary)' }}>{selectedSize}</span>
           </div>
           <div style={{ display: 'flex', gap: '5px', flexWrap: 'wrap' }}>
-            {product.sizes.map((size) => {
+            {sizesList.map((size) => {
               const isSelected = selectedSize === size;
               return (
                 <button

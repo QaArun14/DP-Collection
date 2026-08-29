@@ -126,12 +126,39 @@ export default function AdminDashboard({
 
   // --- Product Handlers ---
   const handleSaveProduct = async (prodData) => {
+    const cleanImages = Array.isArray(prodData.images) && prodData.images.length > 0
+      ? prodData.images.filter(Boolean)
+      : [prodData.primaryImage, prodData.secondaryImage].filter(Boolean);
+
+    const safeProduct = {
+      ...prodData,
+      id: String(prodData.id || Date.now()),
+      category: (prodData.category || 'straight').toLowerCase(),
+      sizes: Array.isArray(prodData.sizes) && prodData.sizes.length > 0 ? prodData.sizes : ['S', 'M', 'L', 'XL'],
+      colors: Array.isArray(prodData.colors) && prodData.colors.length > 0 ? prodData.colors : [{ name: 'Standard', hex: '#881337', image: cleanImages[0] || '' }],
+      images: cleanImages.length > 0 ? cleanImages : ['https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80'],
+      primaryImage: cleanImages[0] || prodData.primaryImage || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+      secondaryImage: cleanImages[1] || prodData.secondaryImage || cleanImages[0] || 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80',
+      price: Number(prodData.price) || 999,
+      originalPrice: Number(prodData.originalPrice) || (Number(prodData.price) ? Number(prodData.price) * 2 : 1999),
+      rating: Number(prodData.rating) || 4.8,
+      reviewCount: Number(prodData.reviewCount) || 1,
+      stock: Number(prodData.stock) || 10,
+      craft: prodData.craft || 'Handblock Print',
+      fabric: prodData.fabric || '100% Pure Cotton',
+      fit: prodData.fit || 'Regular Fit',
+      neckline: prodData.neckline || 'Round Neck',
+      tag: prodData.tag || 'New Arrival',
+      discount: prodData.discount || '40% OFF',
+      isFeatured: Boolean(prodData.isFeatured)
+    };
+
     if (editingProduct) {
-      setProducts((prev) => prev.map((p) => (String(p.id) === String(prodData.id) ? prodData : p)));
-      await apiUpdateProduct(prodData.id, prodData);
+      setProducts((prev) => prev.map((p) => (String(p.id) === String(safeProduct.id) ? safeProduct : p)));
+      await apiUpdateProduct(safeProduct.id, safeProduct);
     } else {
-      setProducts((prev) => [prodData, ...prev]);
-      await apiCreateProduct(prodData);
+      setProducts((prev) => [safeProduct, ...prev]);
+      await apiCreateProduct(safeProduct);
     }
   };
 

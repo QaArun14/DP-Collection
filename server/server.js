@@ -366,14 +366,25 @@ app.get('/api/products', async (req, res) => {
 app.post('/api/products', async (req, res) => {
   try {
     const prodData = {
-      id: String(req.body.id || Date.now()),
-      ...req.body
+      ...req.body,
+      id: String(req.body.id || Date.now())
     };
+
+    let result = prodData;
     if (isMongoConnected) {
-      const created = await Product.create(prodData);
-      return res.status(201).json(created);
+      result = await Product.findOneAndUpdate({ id: prodData.id }, prodData, { new: true, upsert: true });
     }
-    res.status(201).json(prodData);
+
+    try {
+      if (fs.existsSync(DATA_FILE)) {
+        const raw = fs.readFileSync(DATA_FILE, 'utf8');
+        const data = JSON.parse(raw);
+        data.products = [prodData, ...(data.products || []).filter((p) => String(p.id) !== prodData.id)];
+        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+      }
+    } catch (e) {}
+
+    res.status(201).json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -382,11 +393,26 @@ app.post('/api/products', async (req, res) => {
 app.put('/api/products/:id', async (req, res) => {
   try {
     const id = String(req.params.id);
+    const prodData = {
+      ...req.body,
+      id
+    };
+
+    let result = prodData;
     if (isMongoConnected) {
-      const updated = await Product.findOneAndUpdate({ id }, req.body, { new: true, upsert: true });
-      return res.json(updated);
+      result = await Product.findOneAndUpdate({ id }, prodData, { new: true, upsert: true });
     }
-    res.json(req.body);
+
+    try {
+      if (fs.existsSync(DATA_FILE)) {
+        const raw = fs.readFileSync(DATA_FILE, 'utf8');
+        const data = JSON.parse(raw);
+        data.products = (data.products || []).map((p) => (String(p.id) === id ? prodData : p));
+        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+      }
+    } catch (e) {}
+
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
