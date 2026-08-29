@@ -1,25 +1,60 @@
 import React, { useState, useEffect } from 'react';
-import { X, Upload, Plus, Trash2, Sparkles, Image as ImageIcon, Check, AlertCircle } from 'lucide-react';
+import { X, Upload, Trash2, Sparkles, Image as ImageIcon, Check, Info } from 'lucide-react';
 import { CATEGORIES } from '../../data/products';
 import ImageUploadField from './ImageUploadField';
+
+const TOTAL_PHOTO_SLOTS = 6;
+
+const SLOT_CONFIGS = [
+  {
+    id: 0,
+    title: '👑 Slot 1: Primary Cover Photo *',
+    required: true,
+    desc: 'Main image displayed in catalog, search results, and hero previews.',
+    placeholder: 'Primary catalog cover photo'
+  },
+  {
+    id: 1,
+    title: '📸 Slot 2: Back / Second Angle Look',
+    required: false,
+    desc: 'Shown on catalog card hover and as secondary zoom angle.',
+    placeholder: 'Back or alternate angle shot'
+  },
+  {
+    id: 2,
+    title: '🧵 Slot 3: Fabric & Texture Close-up',
+    required: false,
+    desc: 'Close-up showing weave, cotton mulmul softness, or silk sheen.',
+    placeholder: 'Fabric texture detail photo'
+  },
+  {
+    id: 3,
+    title: '✨ Slot 4: Neckline, Zari & Embroidery',
+    required: false,
+    desc: 'Highlights intricate neckline, gota patti work, or buttons.',
+    placeholder: 'Neckline & artisan embroidery shot'
+  },
+  {
+    id: 4,
+    title: '👗 Slot 5: Full Length Flare & Hemline',
+    required: false,
+    desc: 'Displays the silhouette, anarkali flare, or side slits.',
+    placeholder: 'Full silhouette & bottom flare view'
+  },
+  {
+    id: 5,
+    title: '💃 Slot 6: Model Styling & Lookbook',
+    required: false,
+    desc: 'Lifestyle styling with dupatta, jewelry, or palazzo set.',
+    placeholder: 'Full ensemble & lookbook photo'
+  }
+];
 
 export default function ProductModal({ isOpen, onClose, onSave, productToEdit }) {
   if (!isOpen) return null;
 
-  // Up to 6 product images state
-  const [images, setImages] = useState(() => {
-    if (productToEdit) {
-      if (Array.isArray(productToEdit.images) && productToEdit.images.length > 0) {
-        return productToEdit.images.slice(0, 6);
-      }
-      const fallback = [productToEdit.primaryImage, productToEdit.secondaryImage].filter(Boolean);
-      return fallback.length > 0 ? fallback : [''];
-    }
-    return [
-      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80'
-    ];
-  });
+  // Exactly 6 fixed photo slots state
+  const [images, setImages] = useState(() => Array(TOTAL_PHOTO_SLOTS).fill(''));
 
   const [formData, setFormData] = useState({
     id: null,
@@ -45,32 +80,43 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
     washCare: 'Gentle hand wash in cold water with mild detergent.',
     isFeatured: false,
     colors: [
-      { name: 'Maroon', hex: '#881337', image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80' }
+      { name: 'Maroon', hex: '#881337', image: '' }
     ]
   });
 
   useEffect(() => {
     if (productToEdit) {
-      let initialImgs = [];
+      let existingImgs = [];
       if (Array.isArray(productToEdit.images) && productToEdit.images.length > 0) {
-        initialImgs = productToEdit.images.slice(0, 6);
+        existingImgs = productToEdit.images;
       } else {
-        initialImgs = [productToEdit.primaryImage, productToEdit.secondaryImage].filter(Boolean);
+        existingImgs = [productToEdit.primaryImage, productToEdit.secondaryImage].filter(Boolean);
       }
-      if (initialImgs.length === 0) initialImgs = [''];
-      setImages(initialImgs);
+
+      // Pad up to exactly 6 slots
+      const paddedImgs = Array(TOTAL_PHOTO_SLOTS).fill('').map((_, idx) => existingImgs[idx] || '');
+      setImages(paddedImgs);
+
       setFormData({
         ...productToEdit,
-        images: initialImgs,
-        primaryImage: initialImgs[0] || productToEdit.primaryImage || '',
-        secondaryImage: initialImgs[1] || productToEdit.secondaryImage || ''
+        category: (productToEdit.category || 'straight').toLowerCase(),
+        sizes: Array.isArray(productToEdit.sizes) && productToEdit.sizes.length > 0 ? productToEdit.sizes : ['S', 'M', 'L', 'XL'],
+        colors: Array.isArray(productToEdit.colors) && productToEdit.colors.length > 0 ? productToEdit.colors : [{ name: 'Standard', hex: '#881337', image: paddedImgs[0] || '' }],
+        price: Number(productToEdit.price) || 1299,
+        originalPrice: Number(productToEdit.originalPrice) || 2499,
+        stock: Number(productToEdit.stock) || 10
       });
     } else {
-      const defaultImgs = [
+      const defaultSampleImgs = [
         'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
-        'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80'
+        'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80',
+        '',
+        '',
+        '',
+        ''
       ];
-      setImages(defaultImgs);
+      setImages(defaultSampleImgs);
+
       setFormData({
         id: Date.now(),
         name: '',
@@ -89,14 +135,11 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
         sleeves: '3/4th Sleeves',
         stock: 12,
         sizes: ['S', 'M', 'L', 'XL'],
-        images: defaultImgs,
-        primaryImage: defaultImgs[0],
-        secondaryImage: defaultImgs[1],
         description: 'Handcrafted luxury ethnic kurti crafted from breathable pure cotton fabric.',
         washCare: 'Hand wash in cold water.',
         isFeatured: false,
         colors: [
-          { name: 'Red', hex: '#881337', image: defaultImgs[0] }
+          { name: 'Red', hex: '#881337', image: defaultSampleImgs[0] }
         ]
       });
     }
@@ -127,35 +170,28 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
 
   const handleToggleSize = (size) => {
     setFormData((prev) => {
-      const exists = prev.sizes.includes(size);
-      const newSizes = exists ? prev.sizes.filter((s) => s !== size) : [...prev.sizes, size];
+      const currentSizes = Array.isArray(prev.sizes) ? prev.sizes : [];
+      const exists = currentSizes.includes(size);
+      const newSizes = exists ? currentSizes.filter((s) => s !== size) : [...currentSizes, size];
       return { ...prev, sizes: newSizes };
     });
   };
 
-  // Image Slot Handlers (Max 6 slots)
-  const handleImageChange = (index, newUrl) => {
+  // Image Slot Handlers (6 slots)
+  const handleSlotImageChange = (slotIndex, newUrl) => {
     setImages((prev) => {
       const updated = [...prev];
-      updated[index] = newUrl;
+      updated[slotIndex] = newUrl;
       return updated;
     });
   };
 
-  const handleAddImageSlot = () => {
-    if (images.length >= 6) {
-      alert('You can add up to 6 pictures maximum per product.');
-      return;
-    }
-    setImages((prev) => [...prev, '']);
-  };
-
-  const handleRemoveImageSlot = (index) => {
-    if (images.length <= 1) {
-      setImages(['']);
-      return;
-    }
-    setImages((prev) => prev.filter((_, i) => i !== index));
+  const handleClearSlot = (slotIndex) => {
+    setImages((prev) => {
+      const updated = [...prev];
+      updated[slotIndex] = '';
+      return updated;
+    });
   };
 
   const handleSubmit = (e) => {
@@ -164,17 +200,25 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
       alert('Please enter a product name');
       return;
     }
-    const cleanImages = images.filter((img) => img && typeof img === 'string' && img.trim() !== '');
-    if (cleanImages.length === 0) {
-      alert('Please add at least 1 primary product photo.');
+
+    // Collect all filled non-empty image slots
+    const filledImages = images.filter((img) => img && typeof img === 'string' && img.trim() !== '');
+    if (filledImages.length === 0) {
+      alert('Please upload or enter at least Slot 1 (Primary Cover Photo).');
       return;
     }
 
     const payload = {
       ...formData,
-      images: cleanImages,
-      primaryImage: cleanImages[0],
-      secondaryImage: cleanImages[1] || cleanImages[0]
+      category: (formData.category || 'straight').toLowerCase(),
+      sizes: Array.isArray(formData.sizes) && formData.sizes.length > 0 ? formData.sizes : ['S', 'M', 'L', 'XL'],
+      colors: Array.isArray(formData.colors) && formData.colors.length > 0 ? formData.colors : [{ name: 'Standard', hex: '#881337', image: filledImages[0] }],
+      images: filledImages,
+      primaryImage: filledImages[0],
+      secondaryImage: filledImages[1] || filledImages[0],
+      price: Number(formData.price) || 999,
+      originalPrice: Number(formData.originalPrice) || Number(formData.price) * 2 || 1999,
+      stock: Number(formData.stock) || 10
     };
 
     onSave(payload);
@@ -182,15 +226,7 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
   };
 
   const allAvailableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', '3XL', '4XL'];
-
-  const slotLabels = [
-    'Photo 1: Primary Cover Photo * (Main Store & Catalog)',
-    'Photo 2: Back / Angle View (Hover & Lookbook)',
-    'Photo 3: Fabric Texture & Weave Detail',
-    'Photo 4: Neckline, Zari & Gota Patti Work',
-    'Photo 5: Full Length Flare & Styling Look',
-    'Photo 6: Model Close-Up / Additional Angle'
-  ];
+  const filledCount = images.filter((img) => img && typeof img === 'string' && img.trim() !== '').length;
 
   return (
     <div className="modal-overlay" onClick={onClose} style={{ zIndex: 1200, padding: '16px' }}>
@@ -199,15 +235,15 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
         style={{
           backgroundColor: '#ffffff',
           borderRadius: '16px',
-          maxWidth: '860px',
+          maxWidth: '920px',
           width: '100%',
-          maxHeight: '92vh',
+          maxHeight: '94vh',
           overflowY: 'auto',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.4)',
           border: '1px solid var(--color-border)'
         }}
       >
-        {/* Header */}
+        {/* Modal Header */}
         <div
           style={{
             padding: '16px 24px',
@@ -222,13 +258,13 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '1.2rem' }}>👑</span>
+            <span style={{ fontSize: '1.25rem' }}>👑</span>
             <div>
               <h3 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: 'var(--color-primary)' }}>
                 {productToEdit ? 'Edit Kurti Product' : 'Add New Designer Kurti'}
               </h3>
               <p style={{ margin: 0, fontSize: '0.75rem', color: '#78716c' }}>
-                Manage catalog specs, pricing, sizes & up to 6 high-res photos
+                Manage catalog info & up to 6 designated photo slots ({filledCount} of 6 slots filled)
               </p>
             </div>
           </div>
@@ -241,7 +277,7 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
           </button>
         </div>
 
-        {/* Form Body */}
+        {/* Form Content */}
         <form onSubmit={handleSubmit} style={{ padding: '24px' }}>
           {/* Row 1: Name, Category, Tag */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '16px' }}>
@@ -405,13 +441,13 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
           </div>
 
           {/* Sizes Selection */}
-          <div style={{ marginBottom: '18px' }}>
+          <div style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#44403c', marginBottom: '8px' }}>
               Available Sizes (Click to Toggle)
             </label>
             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
               {allAvailableSizes.map((size) => {
-                const isSelected = formData.sizes.includes(size);
+                const isSelected = (formData.sizes || []).includes(size);
                 return (
                   <button
                     type="button"
@@ -436,15 +472,15 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
             </div>
           </div>
 
-          {/* ======================================================== */}
-          {/* MULTI-PHOTO GALLERY MANAGER (UP TO 6 PICTURE SLOTS)       */}
-          {/* ======================================================== */}
+          {/* ========================================================================= */}
+          {/* 6 DESIGNATED PRODUCT PICTURE SLOTS (ALL 6 SLOTS DIRECTLY VISIBLE & READY) */}
+          {/* ========================================================================= */}
           <div
             style={{
-              marginBottom: '20px',
+              marginBottom: '22px',
               backgroundColor: '#fafaf9',
-              borderRadius: '14px',
-              padding: '16px',
+              borderRadius: '16px',
+              padding: '18px',
               border: '1.5px solid #e7e5e4'
             }}
           >
@@ -453,7 +489,7 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                marginBottom: '14px',
+                marginBottom: '16px',
                 flexWrap: 'wrap',
                 gap: '10px',
                 paddingBottom: '12px',
@@ -464,144 +500,132 @@ export default function ProductModal({ isOpen, onClose, onSave, productToEdit })
                 <h4
                   style={{
                     margin: 0,
-                    fontSize: '0.95rem',
-                    fontWeight: 700,
+                    fontSize: '0.98rem',
+                    fontWeight: 800,
                     color: '#1c1917',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}
                 >
-                  <ImageIcon size={18} color="var(--color-primary)" />
-                  Product Picture Slots ({images.length} of 6 active)
+                  <ImageIcon size={19} color="var(--color-primary)" />
+                  Product Picture Slots (6 Total Slots Available)
                 </h4>
-                <p style={{ margin: '3px 0 0', fontSize: '0.76rem', color: '#78716c' }}>
-                  Add up to 6 high-resolution pictures. Photos can be uploaded from your device or pasted as web URLs.
+                <p style={{ margin: '3px 0 0', fontSize: '0.78rem', color: '#78716c' }}>
+                  Aap jitni chahein utni pictures fill kar sakte hain (1 se lekar 6 tak). Slot 1 zaroori hai, baaki optional hain.
                 </p>
               </div>
 
-              {/* Add Slot Button / Max Indicator */}
-              {images.length < 6 ? (
-                <button
-                  type="button"
-                  onClick={handleAddImageSlot}
-                  style={{
-                    backgroundColor: '#ffffff',
-                    color: 'var(--color-primary)',
-                    border: '1.5px solid var(--color-primary)',
-                    borderRadius: '8px',
-                    padding: '6px 14px',
-                    fontSize: '0.8rem',
-                    fontWeight: 700,
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '6px',
-                    cursor: 'pointer',
-                    boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-                    transition: 'all 0.15s ease'
-                  }}
-                >
-                  <Plus size={15} /> Add Picture Slot ({images.length + 1} of 6)
-                </button>
-              ) : (
-                <span
-                  style={{
-                    fontSize: '0.75rem',
-                    fontWeight: 700,
-                    color: '#059669',
-                    backgroundColor: '#ecfdf5',
-                    padding: '5px 12px',
-                    borderRadius: '9999px',
-                    border: '1px solid #a7f3d0',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '4px'
-                  }}
-                >
-                  <Check size={14} /> Max 6 Picture Slots Reached
-                </span>
-              )}
+              <span
+                style={{
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  color: filledCount > 0 ? 'var(--color-primary)' : '#78716c',
+                  backgroundColor: '#ffffff',
+                  padding: '5px 12px',
+                  borderRadius: '9999px',
+                  border: '1px solid var(--color-border)',
+                  boxShadow: '0 1px 4px rgba(0,0,0,0.04)'
+                }}
+              >
+                📸 {filledCount} / 6 Slots Filled
+              </span>
             </div>
 
-            {/* Grid of Picture Slots (1 to 6) */}
+            {/* 6 Photo Slots Grid (2 columns on desktop, 1 on mobile) */}
             <div
               style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-                gap: '14px'
+                gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))',
+                gap: '16px'
               }}
             >
-              {images.map((imgUrl, index) => (
-                <div
-                  key={index}
-                  style={{
-                    backgroundColor: '#ffffff',
-                    borderRadius: '12px',
-                    padding: '12px',
-                    border: index === 0 ? '1.5px solid #d4af37' : '1px solid #e7e5e4',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
-                    position: 'relative'
-                  }}
-                >
+              {SLOT_CONFIGS.map((slot) => {
+                const currentVal = images[slot.id] || '';
+                const isSlotFilled = Boolean(currentVal && currentVal.trim());
+
+                return (
                   <div
+                    key={slot.id}
                     style={{
+                      backgroundColor: '#ffffff',
+                      borderRadius: '12px',
+                      padding: '14px',
+                      border: slot.id === 0 ? '1.5px solid #d4af37' : isSlotFilled ? '1.5px solid #cbd5e1' : '1px dashed #d6d3d1',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.03)',
+                      position: 'relative',
                       display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      marginBottom: '8px'
+                      flexDirection: 'column'
                     }}
                   >
-                    <span
+                    {/* Slot Header */}
+                    <div
                       style={{
-                        fontSize: '0.78rem',
-                        fontWeight: 700,
-                        color: index === 0 ? '#92400e' : '#292524',
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '4px'
+                        justifyContent: 'space-between',
+                        marginBottom: '6px'
                       }}
                     >
-                      {index === 0 && '👑'} {slotLabels[index] || `Photo Slot ${index + 1}`}
-                    </span>
-
-                    {index > 0 && (
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveImageSlot(index)}
+                      <span
                         style={{
-                          background: 'none',
-                          border: 'none',
-                          color: '#dc2626',
-                          cursor: 'pointer',
-                          fontSize: '0.72rem',
-                          fontWeight: 600,
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '3px',
-                          padding: '3px 8px',
-                          borderRadius: '4px',
-                          backgroundColor: '#fef2f2'
+                          fontSize: '0.8rem',
+                          fontWeight: 700,
+                          color: slot.id === 0 ? '#92400e' : '#1c1917'
                         }}
-                        title="Delete this photo slot"
                       >
-                        <Trash2 size={12} /> Remove
-                      </button>
-                    )}
-                  </div>
+                        {slot.title}
+                      </span>
 
-                  <ImageUploadField
-                    label=""
-                    value={imgUrl}
-                    onChange={(newUrl) => handleImageChange(index, newUrl)}
-                    aspectRatio="portrait"
-                    helperText={index === 0 ? 'Primary catalog photo' : `Gallery angle ${index + 1}`}
-                  />
-                </div>
-              ))}
+                      {isSlotFilled ? (
+                        <button
+                          type="button"
+                          onClick={() => handleClearSlot(slot.id)}
+                          style={{
+                            background: 'none',
+                            border: 'none',
+                            color: '#dc2626',
+                            cursor: 'pointer',
+                            fontSize: '0.72rem',
+                            fontWeight: 600,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '3px',
+                            padding: '2px 6px',
+                            borderRadius: '4px',
+                            backgroundColor: '#fef2f2'
+                          }}
+                          title="Clear this photo"
+                        >
+                          <Trash2 size={12} /> Clear
+                        </button>
+                      ) : (
+                        <span style={{ fontSize: '0.68rem', color: '#94a3b8', fontWeight: 500 }}>
+                          {slot.id === 0 ? 'Required' : 'Optional'}
+                        </span>
+                      )}
+                    </div>
+
+                    <p style={{ margin: '0 0 10px', fontSize: '0.72rem', color: '#78716c', lineHeight: 1.3 }}>
+                      {slot.desc}
+                    </p>
+
+                    <div style={{ marginTop: 'auto' }}>
+                      <ImageUploadField
+                        label=""
+                        value={currentVal}
+                        onChange={(newUrl) => handleSlotImageChange(slot.id, newUrl)}
+                        aspectRatio="portrait"
+                        helperText={slot.placeholder}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
-          {/* Description & Wash Care */}
+          {/* Description */}
           <div style={{ marginBottom: '20px' }}>
             <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: '#44403c', marginBottom: '4px' }}>
               Product Description
