@@ -7,6 +7,7 @@ const multer = require('multer');
 const mongoose = require('mongoose');
 
 const app = express();
+app.set('trust proxy', true);
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI;
 
@@ -339,7 +340,9 @@ app.post('/api/upload', upload.single('image'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ success: false, error: 'No image file uploaded' });
   }
-  const fileUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+  const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https' || (req.get('host') && req.get('host').includes('onrender.com'));
+  const protocol = isHttps ? 'https' : (req.protocol || 'http');
+  const fileUrl = `${protocol}://${req.get('host')}/uploads/${req.file.filename}`;
   res.json({
     success: true,
     url: fileUrl,

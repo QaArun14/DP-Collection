@@ -1,12 +1,22 @@
 import { PRODUCTS, TESTIMONIALS, PROMO_CODES } from '../data/products';
 
-// Dynamic Backend URL: auto-detects host IP for mobile devices on local WiFi, or uses VITE_API_URL for production
+// Dynamic Backend URL: auto-detects Render cloud backend vs local development
 const getApiBaseUrl = () => {
   if (import.meta.env.VITE_API_URL) {
     return import.meta.env.VITE_API_URL;
   }
   if (typeof window !== 'undefined') {
     const host = window.location.hostname;
+    // 1. If on Render, Netlify, Vercel, or custom production domain
+    if (
+      host.includes('onrender.com') ||
+      host.includes('netlify.app') ||
+      host.includes('vercel.app') ||
+      (host && host !== 'localhost' && host !== '127.0.0.1' && !host.startsWith('192.168.') && !host.startsWith('10.') && !host.startsWith('172.'))
+    ) {
+      return 'https://dp-collection-h2g3.onrender.com/api';
+    }
+    // 2. If local network testing on mobile (192.168.x.x)
     if (host && host !== 'localhost' && host !== '127.0.0.1') {
       return `http://${host}:5000/api`;
     }
