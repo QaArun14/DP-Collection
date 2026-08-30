@@ -16,7 +16,6 @@ import WhatsAppWidget from './components/WhatsAppWidget';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminLogin from './components/admin/AdminLogin';
 import { isAdminLoggedIn, setAdminLoggedIn } from './utils/storage';
-import { PRODUCTS, TESTIMONIALS, PROMO_CODES } from './data/products';
 
 import {
   apiFetchProducts,
@@ -39,44 +38,34 @@ function App() {
 
   // Navigation View: 'store' or 'admin'
   const [currentView, setCurrentView] = useState(isInitialAdminPath ? 'admin' : 'store');
+  const [isAdminAuth, setIsAdminAuth] = useState(isAdminLoggedIn());
 
-  // Admin Auth Status from session
-  const [isAdminAuth, setIsAdminAuth] = useState(isAdminLoggedIn);
-
-  // Sync browser URL history & Hash routing
+  // Listen to browser Back/Forward & hash changes for clean navigation
   useEffect(() => {
-    const handleUrlChange = () => {
-      const isPathAdmin =
+    const handleLocationChange = () => {
+      const isAdminRoute =
         window.location.pathname.startsWith('/admin') ||
         window.location.hash.startsWith('#admin') ||
         window.location.search.includes('view=admin');
-      setCurrentView(isPathAdmin ? 'admin' : 'store');
+      setCurrentView(isAdminRoute ? 'admin' : 'store');
     };
 
-    window.addEventListener('popstate', handleUrlChange);
-    window.addEventListener('hashchange', handleUrlChange);
+    window.addEventListener('popstate', handleLocationChange);
+    window.addEventListener('hashchange', handleLocationChange);
     return () => {
-      window.removeEventListener('popstate', handleUrlChange);
-      window.removeEventListener('hashchange', handleUrlChange);
+      window.removeEventListener('popstate', handleLocationChange);
+      window.removeEventListener('hashchange', handleLocationChange);
     };
   }, []);
 
   const navigateToAdmin = () => {
     setCurrentView('admin');
-    try {
-      window.history.pushState(null, '', '/admin');
-    } catch (e) {
-      window.location.hash = 'admin';
-    }
+    window.history.pushState(null, '', '/#admin');
   };
 
   const navigateToStore = () => {
     setCurrentView('store');
-    try {
-      window.history.pushState(null, '', '/');
-    } catch (e) {
-      window.location.hash = '';
-    }
+    window.history.pushState(null, '', '/');
   };
 
   const handleAdminLogout = () => {
@@ -86,12 +75,12 @@ function App() {
     navigateToStore();
   };
 
-  // Dynamic CMS State (Loaded directly from Backend API with local fallback)
-  const [products, setProducts] = useState(PRODUCTS);
+  // Dynamic CMS State (100% Real Database, No Dummy Fallbacks)
+  const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
-  const [reviews, setReviews] = useState(TESTIMONIALS);
+  const [reviews, setReviews] = useState([]);
   const [instaPosts, setInstaPosts] = useState([]);
-  const [coupons, setCoupons] = useState(PROMO_CODES);
+  const [coupons, setCoupons] = useState({});
   const [landingContent, setLandingContent] = useState(null);
   const [storeSettings, setStoreSettings] = useState({
     storeName: 'Durgesh Collection',
@@ -105,7 +94,7 @@ function App() {
     instagramHandle: '@durgesh_collection'
   });
 
-  // Load from Backend REST API on Mount
+  // Load 100% from Backend REST API / MongoDB on Mount
   useEffect(() => {
     async function loadBackendData() {
       const [prods, ords, revs, insta, coup, sett, land] = await Promise.allSettled([
@@ -118,19 +107,19 @@ function App() {
         apiFetchLanding()
       ]);
 
-      if (prods.status === 'fulfilled' && Array.isArray(prods.value) && prods.value.length > 0) {
+      if (prods.status === 'fulfilled' && Array.isArray(prods.value)) {
         setProducts(prods.value);
       }
       if (ords.status === 'fulfilled' && Array.isArray(ords.value)) {
         setOrders(ords.value);
       }
-      if (revs.status === 'fulfilled' && Array.isArray(revs.value) && revs.value.length > 0) {
+      if (revs.status === 'fulfilled' && Array.isArray(revs.value)) {
         setReviews(revs.value);
       }
-      if (insta.status === 'fulfilled' && Array.isArray(insta.value) && insta.value.length > 0) {
+      if (insta.status === 'fulfilled' && Array.isArray(insta.value)) {
         setInstaPosts(insta.value);
       }
-      if (coup.status === 'fulfilled' && coup.value && Object.keys(coup.value).length > 0) {
+      if (coup.status === 'fulfilled' && coup.value && typeof coup.value === 'object') {
         setCoupons(coup.value);
       }
       if (sett.status === 'fulfilled' && sett.value?.storeName) {

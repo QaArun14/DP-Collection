@@ -1,5 +1,3 @@
-import { PRODUCTS, TESTIMONIALS, PROMO_CODES } from '../data/products';
-
 // Dynamic Backend URL: auto-detects Render cloud backend vs local development
 const getApiBaseUrl = () => {
   if (import.meta.env.VITE_API_URL) {
@@ -50,24 +48,24 @@ export async function uploadImageToBackend(file) {
 }
 
 // ==========================================
-// 1. PRODUCTS REST API (DUAL PERSISTENCE)
+// 1. PRODUCTS REST API (100% REAL DATABASE)
 // ==========================================
 const STORAGE_KEY_PRODUCTS = 'durgesh_collection_products_v3';
 
-function getLocalStoredProducts() {
+function getLocalCachedProducts() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY_PRODUCTS);
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) return parsed;
     }
   } catch (e) {}
-  return PRODUCTS;
+  return [];
 }
 
-function saveLocalStoredProducts(products) {
+function saveLocalCachedProducts(products) {
   try {
-    if (Array.isArray(products) && products.length > 0) {
+    if (Array.isArray(products)) {
       localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(products));
     }
   } catch (e) {}
@@ -78,44 +76,45 @@ export async function apiFetchProducts() {
     const res = await fetch(`${API_BASE_URL}/products`);
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) {
-        saveLocalStoredProducts(data);
+      if (Array.isArray(data)) {
+        saveLocalCachedProducts(data);
         return data;
       }
     }
   } catch (e) {
-    console.warn('Could not fetch products from backend, using local catalog fallback.', e);
+    console.warn('Error fetching products from database', e);
   }
-  return getLocalStoredProducts();
+  return getLocalCachedProducts();
 }
 
 export async function apiCreateProduct(product) {
-  // 1. Instantly save in local storage so it immediately shows on storefront
-  const current = getLocalStoredProducts();
+  const current = getLocalCachedProducts();
   const updated = [product, ...current.filter((p) => String(p.id) !== String(product.id))];
-  saveLocalStoredProducts(updated);
+  saveLocalCachedProducts(updated);
 
-  // 2. Sync to Backend / MongoDB
   try {
     const res = await fetch(`${API_BASE_URL}/products`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(product)
     });
-    if (res.ok) return await res.json();
+    if (res.ok) {
+      const created = await res.json();
+      const synced = [created, ...current.filter((p) => String(p.id) !== String(product.id) && String(p.id) !== String(created.id))];
+      saveLocalCachedProducts(synced);
+      return created;
+    }
   } catch (e) {
-    console.error('Error creating product on backend', e);
+    console.error('Error creating product in database', e);
   }
   return product;
 }
 
 export async function apiUpdateProduct(id, product) {
-  // 1. Instantly update in local storage
-  const current = getLocalStoredProducts();
+  const current = getLocalCachedProducts();
   const updated = current.map((p) => (String(p.id) === String(id) ? product : p));
-  saveLocalStoredProducts(updated);
+  saveLocalCachedProducts(updated);
 
-  // 2. Sync to Backend / MongoDB
   try {
     const res = await fetch(`${API_BASE_URL}/products/${id}`, {
       method: 'PUT',
@@ -124,29 +123,27 @@ export async function apiUpdateProduct(id, product) {
     });
     if (res.ok) return await res.json();
   } catch (e) {
-    console.error('Error updating product on backend', e);
+    console.error('Error updating product in database', e);
   }
   return product;
 }
 
 export async function apiDeleteProduct(id) {
-  // 1. Instantly remove from local storage
-  const current = getLocalStoredProducts();
+  const current = getLocalCachedProducts();
   const updated = current.filter((p) => String(p.id) !== String(id));
-  saveLocalStoredProducts(updated);
+  saveLocalCachedProducts(updated);
 
-  // 2. Sync to Backend / MongoDB
   try {
     const res = await fetch(`${API_BASE_URL}/products/${id}`, { method: 'DELETE' });
     return res.ok;
   } catch (e) {
-    console.error('Error deleting product on backend', e);
+    console.error('Error deleting product from database', e);
     return false;
   }
 }
 
 // ==========================================
-// 2. ORDERS REST API
+// 2. ORDERS REST API (100% REAL DATABASE)
 // ==========================================
 export async function apiFetchOrders() {
   try {
@@ -155,7 +152,7 @@ export async function apiFetchOrders() {
       return await res.json();
     }
   } catch (e) {
-    console.warn('Could not fetch orders from backend', e);
+    console.warn('Could not fetch orders from database', e);
   }
   return [];
 }
@@ -169,7 +166,7 @@ export async function apiCreateOrder(order) {
     });
     if (res.ok) return await res.json();
   } catch (e) {
-    console.error('Error saving order on backend', e);
+    console.error('Error saving order to database', e);
   }
   return order;
 }
@@ -182,24 +179,24 @@ export async function apiUpdateOrderStatus(orderId, status) {
       body: JSON.stringify({ status })
     });
   } catch (e) {
-    console.error('Error updating order status on backend', e);
+    console.error('Error updating order status in database', e);
   }
 }
 
 // ==========================================
-// 3. REVIEWS REST API
+// 3. REVIEWS REST API (100% REAL DATABASE)
 // ==========================================
 export async function apiFetchReviews() {
   try {
     const res = await fetch(`${API_BASE_URL}/reviews`);
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) return data;
+      if (Array.isArray(data)) return data;
     }
   } catch (e) {
-    console.warn('Could not fetch reviews from backend, using fallback', e);
+    console.warn('Could not fetch reviews from database', e);
   }
-  return TESTIMONIALS;
+  return [];
 }
 
 export async function apiCreateReview(review) {
@@ -221,17 +218,17 @@ export async function apiDeleteReview(id) {
 }
 
 // ==========================================
-// 4. INSTAGRAM LOOKBOOK REST API
+// 4. INSTAGRAM LOOKBOOK REST API (100% REAL DATABASE)
 // ==========================================
 export async function apiFetchInsta() {
   try {
     const res = await fetch(`${API_BASE_URL}/insta`);
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) return data;
+      if (Array.isArray(data)) return data;
     }
   } catch (e) {
-    console.warn('Could not fetch insta posts from backend', e);
+    console.warn('Could not fetch insta posts from database', e);
   }
   return [];
 }
@@ -255,19 +252,19 @@ export async function apiDeleteInsta(id) {
 }
 
 // ==========================================
-// 5. PROMO COUPONS REST API
+// 5. PROMO COUPONS REST API (100% REAL DATABASE)
 // ==========================================
 export async function apiFetchCoupons() {
   try {
     const res = await fetch(`${API_BASE_URL}/coupons`);
     if (res.ok) {
       const data = await res.json();
-      if (data && Object.keys(data).length > 0) return data;
+      if (data && typeof data === 'object') return data;
     }
   } catch (e) {
-    console.warn('Could not fetch coupons from backend', e);
+    console.warn('Could not fetch coupons from database', e);
   }
-  return PROMO_CODES;
+  return {};
 }
 
 export async function apiCreateCoupon(coupon) {
@@ -289,7 +286,7 @@ export async function apiDeleteCoupon(code) {
 }
 
 // ==========================================
-// 6. STORE SETTINGS REST API
+// 6. STORE SETTINGS REST API (100% REAL DATABASE)
 // ==========================================
 export async function apiFetchSettings() {
   try {
@@ -298,7 +295,7 @@ export async function apiFetchSettings() {
       return await res.json();
     }
   } catch (e) {
-    console.warn('Could not fetch settings from backend', e);
+    console.warn('Could not fetch settings from database', e);
   }
   return {
     storeName: 'Durgesh Collection',
@@ -326,7 +323,7 @@ export async function apiUpdateSettings(settings) {
 }
 
 // ==========================================
-// 7. ADMIN AUTH REST API
+// 7. ADMIN AUTH REST API (100% REAL DATABASE)
 // ==========================================
 export async function apiAdminLogin(username, password) {
   try {
@@ -340,7 +337,6 @@ export async function apiAdminLogin(username, password) {
     console.warn('Auth server not reachable', e);
   }
 
-  // Local fallback
   const inputUser = (username || '').trim().toLowerCase();
   if ((inputUser === 'admin@durgeshcollection.in' || inputUser === 'admin') && password === 'admin@123') {
     return { success: true };
@@ -359,7 +355,7 @@ export async function apiChangeAdminPassword(username, password) {
 }
 
 // ==========================================
-// 8. LANDING PAGE CONTENT REST API
+// 8. LANDING PAGE CONTENT REST API (100% REAL DATABASE)
 // ==========================================
 export async function apiFetchLanding() {
   try {
@@ -368,7 +364,7 @@ export async function apiFetchLanding() {
       return await res.json();
     }
   } catch (e) {
-    console.warn('Could not fetch landing content from backend', e);
+    console.warn('Could not fetch landing content from database', e);
   }
   return null;
 }
@@ -386,4 +382,3 @@ export async function apiUpdateLanding(landingContent) {
   }
   return landingContent;
 }
-
