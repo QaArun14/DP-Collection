@@ -100,18 +100,20 @@ export default function ProductGrid({
                 }}
               >
                 <span>{cat.name}</span>
-                {cat.id === 'all' && (
-                  <span
-                    style={{
-                      fontSize: '0.7rem',
-                      backgroundColor: isSelected ? 'rgba(255,255,255,0.2)' : '#f5f5f4',
-                      padding: '1px 6px',
-                      borderRadius: '9999px'
-                    }}
-                  >
-                    {products.length}
-                  </span>
-                )}
+                <span
+                  style={{
+                    fontSize: '0.7rem',
+                    backgroundColor: isSelected ? 'rgba(255,255,255,0.25)' : '#f5f5f4',
+                    color: isSelected ? '#ffffff' : '#78716c',
+                    padding: '1px 7px',
+                    borderRadius: '9999px',
+                    fontWeight: 700
+                  }}
+                >
+                  {cat.id === 'all'
+                    ? products.length
+                    : products.filter((p) => (p.category || '').toLowerCase().trim() === cat.id.toLowerCase().trim()).length}
+                </span>
               </button>
             );
           })}

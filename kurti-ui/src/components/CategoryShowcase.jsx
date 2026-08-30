@@ -49,9 +49,17 @@ export default function CategoryShowcase({ onSelectCategory, selectedCategory, p
 
   const getCategoryCount = (catId) => {
     if (!products || products.length === 0) return '';
-    const count = products.filter((p) => p.category === catId).length;
+    const count = products.filter((p) => (p.category || '').toLowerCase().trim() === catId.toLowerCase().trim()).length;
     return `${count} Style${count === 1 ? '' : 's'}`;
   };
+
+  const getCategoryCoverImage = (cat) => {
+    const matchingProd = products.find(
+      (p) => (p.category || '').toLowerCase().trim() === cat.id.toLowerCase().trim() && (p.primaryImage || p.images?.[0])
+    );
+    return matchingProd?.primaryImage || matchingProd?.images?.[0] || cat.image;
+  };
+
   const handleCategoryClick = (id) => {
     onSelectCategory(id);
     const catalogSection = document.getElementById('catalog-section');
@@ -106,7 +114,7 @@ export default function CategoryShowcase({ onSelectCategory, selectedCategory, p
                 className="img-zoom-wrapper"
               >
                 <img
-                  src={cat.image}
+                  src={getCategoryCoverImage(cat)}
                   alt={cat.title}
                   style={{
                     width: '100%',
