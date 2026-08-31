@@ -12,6 +12,7 @@ export default function Navbar({
   setSelectedCategory,
   storeSettings,
   onOpenAdmin,
+  onOpenTrackOrder,
   products = [],
   onQuickView
 }) {
@@ -75,27 +76,50 @@ export default function Navbar({
           </span>
         </div>
 
-        {/* Quick Admin CMS Button in Header */}
-        <button
-          onClick={onOpenAdmin}
-          className="mobile-admin-btn"
-          style={{
-            backgroundColor: 'rgba(212, 175, 55, 0.2)',
-            color: '#fef08a',
-            border: '1px solid #d4af37',
-            padding: '2px 8px',
-            borderRadius: '4px',
-            fontSize: '0.72rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}
-          title="Open Admin Content Management System"
-        >
-          <LayoutDashboard size={13} /> Admin CMS
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Track Order Button */}
+          <button
+            onClick={onOpenTrackOrder}
+            style={{
+              backgroundColor: 'rgba(255, 255, 255, 0.18)',
+              color: '#ffffff',
+              border: '1px solid rgba(255, 255, 255, 0.4)',
+              padding: '3px 10px',
+              borderRadius: '4px',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            title="Track Your Order Status"
+          >
+            <span>🚚</span> Track Order
+          </button>
+
+          {/* Quick Admin CMS Button in Header */}
+          <button
+            onClick={onOpenAdmin}
+            className="mobile-admin-btn"
+            style={{
+              backgroundColor: 'rgba(212, 175, 55, 0.2)',
+              color: '#fef08a',
+              border: '1px solid #d4af37',
+              padding: '3px 10px',
+              borderRadius: '4px',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}
+            title="Open Admin Content Management System"
+          >
+            <LayoutDashboard size={13} /> Admin CMS
+          </button>
+        </div>
       </div>
 
       {/* Main Navigation Bar */}

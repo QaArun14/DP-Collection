@@ -69,12 +69,16 @@ const OrderSchema = new mongoose.Schema(
     paymentId: { type: String, default: '' },
     customerName: { type: String, required: true },
     customerPhone: { type: String, required: true },
+    customerAddress: { type: String, default: '' },
     customerCity: { type: String, default: '' },
+    customerPin: { type: String, default: '' },
     total: { type: Number, required: true },
     items: { type: Array, default: [] },
     status: { type: String, default: 'Confirmed' },
     date: { type: String, default: '' },
-    paymentMethod: { type: String, default: 'COD' }
+    paymentMethod: { type: String, default: 'Cash on Delivery (COD)' },
+    trackingNumber: { type: String, default: '' },
+    courierPartner: { type: String, default: 'Delhivery Express' }
   },
   { timestamps: true, strict: false }
 );
@@ -93,7 +97,7 @@ const ReviewSchema = new mongoose.Schema(
     date: { type: String, default: '' },
     helpfulCount: { type: Number, default: 0 },
     productName: { type: String, default: '' },
-    productTitle: { type: String, default: '' },
+    productCategory: { type: String, default: 'Straight Kurti' },
     avatar: { type: String, default: '' }
   },
   { timestamps: true, strict: false }
@@ -102,11 +106,12 @@ const ReviewSchema = new mongoose.Schema(
 const InstaPostSchema = new mongoose.Schema(
   {
     id: { type: String, required: true, unique: true, index: true },
-    handle: { type: String, default: '@durgesh_collection' },
-    caption: { type: String, default: '' },
-    product: { type: String, default: '' },
     image: { type: String, required: true },
-    likes: { type: String, default: '1.2k' },
+    handle: { type: String, default: '@durgesh_collection' },
+    likes: { type: Number, default: 120 },
+    caption: { type: String, default: '' },
+    productName: { type: String, default: '' },
+    price: { type: Number, default: 1299 },
     link: { type: String, default: '#' }
   },
   { timestamps: true, strict: false }
@@ -133,7 +138,12 @@ const StoreSettingSchema = new mongoose.Schema(
     address: { type: String, default: 'Sanjay Place, Agra, Uttar Pradesh, India' },
     announcementText: { type: String, default: '🌸 FESTIVE UTSAV SALE: Get Flat 25% OFF with code FESTIVE25 | Free Delivery above ₹999 🚚' },
     freeShippingThreshold: { type: Number, default: 999 },
-    instagramHandle: { type: String, default: '@durgesh_collection' }
+    instagramHandle: { type: String, default: '@durgesh_collection' },
+    upiId: { type: String, default: '9758999617@upi' },
+    customQrImage: { type: String, default: '' },
+    upiAccountName: { type: String, default: 'Durgesh Collection' },
+    enableCod: { type: Boolean, default: true },
+    codExtraFee: { type: Number, default: 0 }
   },
   { timestamps: true, strict: false }
 );
@@ -494,12 +504,102 @@ app.post('/api/orders', async (req, res) => {
 app.put('/api/orders/:orderId/status', async (req, res) => {
   try {
     const orderId = String(req.params.orderId);
-    const { status } = req.body;
+    const { status, trackingNumber, courierPartner } = req.body;
+    const updateData = {};
+    if (status) updateData.status = status;
+    if (trackingNumber !== undefined) updateData.trackingNumber = trackingNumber;
+    if (courierPartner !== undefined) updateData.courierPartner = courierPartner;
+
     if (isMongoConnected) {
-      const updated = await Order.findOneAndUpdate({ orderId }, { status }, { new: true });
-      return res.json(updated);
+      const updated = await Order.findOneAndUpdate({ orderId }, { $set: updateData }, { new: true });
+      return res.json(updated || { orderId, ...updateData });
     }
-    res.json({ orderId, status });
+
+    try {
+      if (fs.existsSync(DATA_FILE)) {
+        const raw = fs.readFileSync(DATA_FILE, 'utf8');
+        const data = JSON.parse(raw);
+        data.orders = (data.orders || []).map((o) => (o.orderId === orderId ? { ...o, ...updateData } : o));
+        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+      }
+    } catch (e) {}
+
+    res.json({ orderId, ...updateData });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete single order by ID
+app.delete('/api/orders/:orderId', async (req, res) => {
+  try {
+    const orderId = String(req.params.orderId);
+    if (isMongoConnected) {
+      await Order.deleteMany({ orderId });
+    }
+    try {
+      if (fs.existsSync(DATA_FILE)) {
+        const raw = fs.readFileSync(DATA_FILE, 'utf8');
+        const data = JSON.parse(raw);
+        data.orders = (data.orders || []).filter((o) => o.orderId !== orderId);
+        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+      }
+    } catch (e) {}
+    res.json({ success: true, message: `Order ${orderId} deleted successfully` });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Clear all orders (Delete history)
+app.delete('/api/orders', async (req, res) => {
+  try {
+    if (isMongoConnected) {
+      await Order.deleteMany({});
+    }
+    try {
+      if (fs.existsSync(DATA_FILE)) {
+        const raw = fs.readFileSync(DATA_FILE, 'utf8');
+        const data = JSON.parse(raw);
+        data.orders = [];
+        fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+      }
+    } catch (e) {}
+    res.json({ success: true, message: 'All orders cleared successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Customer Public Order Tracking API (Lookup by orderId or phone)
+app.get('/api/orders/track/:query', async (req, res) => {
+  try {
+    const query = String(req.params.query || '').trim();
+    if (!query) return res.status(400).json({ error: 'Please provide an Order ID or Phone Number' });
+
+    let matchingOrders = [];
+    if (isMongoConnected) {
+      matchingOrders = await Order.find({
+        $or: [
+          { orderId: { $regex: new RegExp(`^${query}$`, 'i') } },
+          { customerPhone: { $regex: new RegExp(query.replace(/\D/g, ''), 'i') } }
+        ]
+      }).sort({ createdAt: -1 });
+    } else {
+      const raw = fs.readFileSync(DATA_FILE, 'utf8');
+      const allOrders = JSON.parse(raw).orders || [];
+      matchingOrders = allOrders.filter(
+        (o) =>
+          (o.orderId || '').toLowerCase() === query.toLowerCase() ||
+          (o.customerPhone || '').includes(query.replace(/\D/g, ''))
+      );
+    }
+
+    if (matchingOrders.length === 0) {
+      return res.status(404).json({ success: false, message: 'No order found with this Order ID or Mobile Number.' });
+    }
+
+    res.json({ success: true, orders: matchingOrders });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

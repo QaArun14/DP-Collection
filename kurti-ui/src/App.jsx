@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import Toast from './components/Toast';
 import OrderSuccessModal from './components/OrderSuccessModal';
 import RazorpayModal from './components/RazorpayModal';
+import TrackOrderModal from './components/TrackOrderModal';
 import WhatsAppWidget from './components/WhatsAppWidget';
 import AdminDashboard from './components/admin/AdminDashboard';
 import AdminLogin from './components/admin/AdminLogin';
@@ -151,8 +152,9 @@ function App() {
   // Razorpay Checkout Modal state
   const [razorpayModalData, setRazorpayModalData] = useState(null);
 
-  // Order Confirmation State
+  // Order Confirmation & Tracking State
   const [confirmedOrder, setConfirmedOrder] = useState(null);
+  const [isTrackOrderOpen, setIsTrackOrderOpen] = useState(false);
 
   // Toast Notification
   const [toast, setToast] = useState(null);
@@ -378,6 +380,7 @@ function App() {
         setSelectedCategory={setSelectedCategory}
         storeSettings={storeSettings}
         onOpenAdmin={navigateToAdmin}
+        onOpenTrackOrder={() => setIsTrackOrderOpen(true)}
         products={products}
         onQuickView={(prod) => setQuickViewProduct(prod)}
       />
@@ -425,11 +428,12 @@ function App() {
         instagramHandle={storeSettings.instagramHandle}
       />
 
-      {/* Footer with dynamic store settings */}
+      {/* Footer with dynamic store settings & order tracking */}
       <Footer
         onCategoryClick={setSelectedCategory}
         storeSettings={storeSettings}
         onOpenAdmin={navigateToAdmin}
+        onOpenTrackOrder={() => setIsTrackOrderOpen(true)}
       />
 
       {/* Quick View Modal */}
@@ -481,7 +485,7 @@ function App() {
         onAddAllToCart={handleAddAllWishlistToCart}
       />
 
-      {/* Razorpay Interactive Test Mode Payment Gateway Modal */}
+      {/* Razorpay Interactive Live / Custom QR Mode Payment Gateway Modal */}
       {razorpayModalData && (
         <RazorpayModal
           isOpen={!!razorpayModalData}
@@ -489,6 +493,7 @@ function App() {
           amount={razorpayModalData.amount}
           orderDetails={razorpayModalData}
           onSuccess={handleRazorpaySuccess}
+          storeSettings={storeSettings}
         />
       )}
 
@@ -497,8 +502,16 @@ function App() {
         <OrderSuccessModal
           orderDetails={confirmedOrder}
           onClose={() => setConfirmedOrder(null)}
+          storeSettings={storeSettings}
         />
       )}
+
+      {/* Customer Order Status Tracking Modal */}
+      <TrackOrderModal
+        isOpen={isTrackOrderOpen}
+        onClose={() => setIsTrackOrderOpen(false)}
+        storeSettings={storeSettings}
+      />
     </div>
   );
 }

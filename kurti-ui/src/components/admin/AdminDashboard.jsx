@@ -41,6 +41,8 @@ import {
   apiUpdateProduct,
   apiDeleteProduct,
   apiUpdateOrderStatus,
+  apiDeleteOrder,
+  apiClearAllOrders,
   apiCreateReview,
   apiDeleteReview,
   apiCreateInsta,
@@ -177,11 +179,37 @@ export default function AdminDashboard({
     await apiUpdateOrderStatus(orderId, newStatus);
   };
 
+  const handleUpdateOrderTracking = async (orderId, trackingNumber, courierPartner) => {
+    setOrders((prev) =>
+      prev.map((ord) =>
+        String(ord.orderId) === String(orderId) ? { ...ord, trackingNumber, courierPartner } : ord
+      )
+    );
+    await apiUpdateOrderStatus(orderId, undefined, trackingNumber, courierPartner);
+  };
+
+  const handleDeleteOrder = async (orderId) => {
+    if (window.confirm(`Are you sure you want to delete order #${orderId}?`)) {
+      setOrders((prev) => prev.filter((ord) => String(ord.orderId) !== String(orderId)));
+      await apiDeleteOrder(orderId);
+    }
+  };
+
+  const handleClearAllOrders = async () => {
+    if (window.confirm('⚠️ WARNING: This will permanently delete ALL order & payment history from the database. Are you sure you want to clear all orders?')) {
+      setOrders([]);
+      await apiClearAllOrders();
+    }
+  };
+
   const handleSendWhatsAppUpdate = (order) => {
-    const text = `Hello ${order.customerName || 'Customer'}! Update on your *Durgesh Collection* order *${order.orderId}*:\n\n` +
-      `📦 Status: *${order.status}*\n` +
-      `💰 Amount: Rs. ${order.total.toLocaleString()}\n\n` +
-      `Thank you for shopping with Durgesh Collection, Sanjay Place, Agra!`;
+    const trackingInfo = order.trackingNumber ? `\n🚚 Courier: *${order.courierPartner || 'Delhivery'}* (AWB: *${order.trackingNumber}*)` : '';
+    const text = `Namaste ${order.customerName || 'Customer'}! 🌸\n\n` +
+      `Update on your *Durgesh Collection* order *#${order.orderId}*:\n` +
+      `📦 Status: *${order.status}*${trackingInfo}\n` +
+      `💰 Total Amount: Rs. ${order.total?.toLocaleString()}\n` +
+      `💳 Mode: *${order.paymentMethod || 'Confirmed'}*\n\n` +
+      `Thank you for choosing Durgesh Collection, Sanjay Place, Agra!`;
     const phone = order.customerPhone || storeSettings.whatsappNumber;
     window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
   };
@@ -711,120 +739,228 @@ export default function AdminDashboard({
           {/* 3. ORDERS & PAYMENTS TAB */}
           {activeTab === 'orders' && (
             <div>
-              <div style={{ marginBottom: '20px' }}>
-                <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  Customer Orders & Payments ({orders.length})
-                </h2>
-                <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#64748b' }}>
-                  Manage payment confirmations, dispatch statuses, and WhatsApp customer alerts
-                </p>
-              </div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px', marginBottom: '20px' }}>
+                <div>
+                  <h2 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                    Customer Orders & Payments ({orders.length})
+                  </h2>
+                  <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#64748b' }}>
+                    Manage live Cash on Delivery (COD), UPI payments, dispatch statuses, and WhatsApp customer alerts
+                  </p>
+                </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                {orders.map((ord) => (
-                  <div
-                    key={ord.orderId}
+                {orders.length > 0 && (
+                  <button
+                    onClick={handleClearAllOrders}
                     style={{
-                      backgroundColor: '#ffffff',
-                      borderRadius: '14px',
-                      padding: '20px',
-                      border: '1px solid #e2e8f0',
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                      gap: '16px',
-                      alignItems: 'center'
+                      backgroundColor: '#fef2f2',
+                      color: '#ef4444',
+                      border: '1px solid #fecaca',
+                      padding: '8px 16px',
+                      borderRadius: '8px',
+                      fontSize: '0.82rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px'
                     }}
                   >
-                    <div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
-                        <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#0f172a' }}>
-                          {ord.orderId}
-                        </h4>
-                        <span style={{ fontSize: '0.7rem', backgroundColor: '#eff6ff', color: '#1e40af', padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>
-                          {ord.paymentMethod || 'Razorpay Verified'}
-                        </span>
-                      </div>
-                      <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>
-                        Payment ID: <strong style={{ fontFamily: 'monospace', color: '#047857' }}>{ord.paymentId}</strong>
-                      </p>
-                      <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>Placed: {ord.date || 'Today'}</span>
-                    </div>
-
-                    <div>
-                      <h5 style={{ margin: '0 0 4px', fontSize: '0.85rem', fontWeight: 700, color: '#1e293b' }}>
-                        Customer: {ord.customerName || 'Online Shopper'}
-                      </h5>
-                      <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>
-                        Phone: {ord.customerPhone || storeSettings.whatsappNumber}
-                      </p>
-                      <p style={{ margin: 0, fontSize: '0.78rem', color: '#64748b' }}>
-                        Location: {ord.customerCity || 'Agra, UP'}
-                      </p>
-                    </div>
-
-                    <div>
-                      <h5 style={{ margin: '0 0 4px', fontSize: '0.85rem', fontWeight: 700, color: '#1e293b' }}>
-                        Items ({ord.items?.length || 1}):
-                      </h5>
-                      <div style={{ fontSize: '0.78rem', color: '#475569' }}>
-                        {ord.items?.map((it, idx) => (
-                          <div key={idx}>
-                            • {it.name} ({it.selectedSize}) x {it.quantity}
-                          </div>
-                        ))}
-                      </div>
-                      <div style={{ marginTop: '4px', fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-primary)' }}>
-                        Total: ₹{ord.total?.toLocaleString()}
-                      </div>
-                    </div>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>
-                        Order Status:
-                      </label>
-                      <select
-                        value={ord.status}
-                        onChange={(e) => handleUpdateOrderStatus(ord.orderId, e.target.value)}
-                        style={{
-                          padding: '6px 10px',
-                          borderRadius: '6px',
-                          border: '1px solid #cbd5e1',
-                          fontWeight: 700,
-                          fontSize: '0.82rem',
-                          backgroundColor: ord.status === 'Delivered' ? '#dcfce7' : ord.status === 'Dispatched' ? '#eff6ff' : '#fef9c3',
-                          color: ord.status === 'Delivered' ? '#166534' : ord.status === 'Dispatched' ? '#1e40af' : '#854d0e'
-                        }}
-                      >
-                        <option value="New">New Order</option>
-                        <option value="Processing">Processing</option>
-                        <option value="Dispatched">Dispatched 🚚</option>
-                        <option value="Delivered">Delivered ✅</option>
-                        <option value="Cancelled">Cancelled ❌</option>
-                      </select>
-
-                      <button
-                        onClick={() => handleSendWhatsAppUpdate(ord)}
-                        style={{
-                          backgroundColor: '#25D366',
-                          color: '#ffffff',
-                          border: 'none',
-                          padding: '6px 12px',
-                          borderRadius: '6px',
-                          fontSize: '0.75rem',
-                          fontWeight: 700,
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          gap: '5px'
-                        }}
-                      >
-                        <MessageCircle size={14} /> Send WhatsApp Alert
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                    <Trash2 size={15} /> Clear All Orders
+                  </button>
+                )}
               </div>
+
+              {orders.length === 0 ? (
+                <div
+                  style={{
+                    backgroundColor: '#ffffff',
+                    borderRadius: '16px',
+                    padding: '48px 24px',
+                    textAlign: 'center',
+                    border: '1px dashed #cbd5e1'
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '56px',
+                      height: '56px',
+                      borderRadius: '50%',
+                      backgroundColor: '#f1f5f9',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 12px',
+                      color: '#64748b'
+                    }}
+                  >
+                    <ShoppingBag size={28} />
+                  </div>
+                  <h3 style={{ margin: '0 0 6px', fontSize: '1.1rem', fontWeight: 700, color: '#1e293b' }}>
+                    No Orders Yet
+                  </h3>
+                  <p style={{ margin: 0, fontSize: '0.82rem', color: '#64748b' }}>
+                    All past test orders have been cleared. When a customer places a COD or UPI order, it will appear here in real time.
+                  </p>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                  {orders.map((ord) => {
+                    const isCod = (ord.paymentMethod || '').toLowerCase().includes('cash') || (ord.paymentMethod || '').toLowerCase().includes('cod');
+                    return (
+                      <div
+                        key={ord.orderId}
+                        style={{
+                          backgroundColor: '#ffffff',
+                          borderRadius: '14px',
+                          padding: '20px',
+                          border: '1px solid #e2e8f0',
+                          display: 'grid',
+                          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                          gap: '16px',
+                          alignItems: 'start'
+                        }}
+                      >
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                            <h4 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 800, color: '#0f172a' }}>
+                              #{ord.orderId}
+                            </h4>
+                            <span
+                              style={{
+                                fontSize: '0.7rem',
+                                backgroundColor: isCod ? '#fef3c7' : '#eff6ff',
+                                color: isCod ? '#92400e' : '#1e40af',
+                                padding: '2px 8px',
+                                borderRadius: '4px',
+                                fontWeight: 800
+                              }}
+                            >
+                              {ord.paymentMethod || (isCod ? 'Cash on Delivery (COD)' : 'UPI / Online')}
+                            </span>
+                          </div>
+                          {ord.paymentId && (
+                            <p style={{ margin: '0 0 2px', fontSize: '0.75rem', color: '#64748b' }}>
+                              Ref ID: <strong style={{ fontFamily: 'monospace', color: '#047857' }}>{ord.paymentId}</strong>
+                            </p>
+                          )}
+                          <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>Placed: {ord.date || 'Recent'}</span>
+                        </div>
+
+                        <div>
+                          <h5 style={{ margin: '0 0 4px', fontSize: '0.85rem', fontWeight: 700, color: '#1e293b' }}>
+                            👤 Customer: {ord.customerName || 'Online Shopper'}
+                          </h5>
+                          <p style={{ margin: '0 0 2px', fontSize: '0.78rem', color: '#64748b' }}>
+                            📞 {ord.customerPhone || storeSettings.whatsappNumber}
+                          </p>
+                          {ord.customerAddress && (
+                            <p style={{ margin: 0, fontSize: '0.76rem', color: '#64748b', lineHeight: 1.3 }}>
+                              📍 {ord.customerAddress}, {ord.customerCity} - {ord.customerPin}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <h5 style={{ margin: '0 0 4px', fontSize: '0.85rem', fontWeight: 700, color: '#1e293b' }}>
+                            Items ({ord.items?.length || 1}):
+                          </h5>
+                          <div style={{ fontSize: '0.78rem', color: '#475569' }}>
+                            {ord.items?.map((it, idx) => (
+                              <div key={idx} style={{ marginBottom: '2px' }}>
+                                • {it.name} <span style={{ color: '#64748b' }}>({it.selectedSize} × {it.quantity})</span>
+                              </div>
+                            ))}
+                          </div>
+                          <div style={{ marginTop: '6px', fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-primary)' }}>
+                            Total: ₹{ord.total?.toLocaleString()}
+                          </div>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          <label style={{ fontSize: '0.75rem', fontWeight: 700, color: '#475569' }}>
+                            Order Status:
+                          </label>
+                          <select
+                            value={ord.status || 'Confirmed'}
+                            onChange={(e) => handleUpdateOrderStatus(ord.orderId, e.target.value)}
+                            style={{
+                              padding: '7px 10px',
+                              borderRadius: '6px',
+                              border: '1px solid #cbd5e1',
+                              fontWeight: 700,
+                              fontSize: '0.82rem',
+                              backgroundColor:
+                                ord.status === 'Delivered'
+                                  ? '#dcfce7'
+                                  : ord.status === 'Dispatched'
+                                  ? '#eff6ff'
+                                  : ord.status === 'Processing'
+                                  ? '#fef9c3'
+                                  : '#f1f5f9',
+                              color:
+                                ord.status === 'Delivered'
+                                  ? '#166534'
+                                  : ord.status === 'Dispatched'
+                                  ? '#1e40af'
+                                  : ord.status === 'Processing'
+                                  ? '#854d0e'
+                                  : '#334155'
+                            }}
+                          >
+                            <option value="Confirmed">1. Confirmed / Placed</option>
+                            <option value="Processing">2. Quality Check & Packing</option>
+                            <option value="Dispatched">3. Dispatched 🚚</option>
+                            <option value="Out for Delivery">4. Out for Delivery 🏡</option>
+                            <option value="Delivered">5. Delivered ✅</option>
+                            <option value="Cancelled">Cancelled ❌</option>
+                          </select>
+
+                          <div style={{ display: 'flex', gap: '6px' }}>
+                            <button
+                              onClick={() => handleSendWhatsAppUpdate(ord)}
+                              style={{
+                                flex: 1,
+                                backgroundColor: '#25D366',
+                                color: '#ffffff',
+                                border: 'none',
+                                padding: '7px 10px',
+                                borderRadius: '6px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: '4px'
+                              }}
+                            >
+                              <MessageCircle size={14} /> WhatsApp
+                            </button>
+
+                            <button
+                              onClick={() => handleDeleteOrder(ord.orderId)}
+                              style={{
+                                backgroundColor: '#fee2e2',
+                                color: '#ef4444',
+                                border: 'none',
+                                padding: '7px 10px',
+                                borderRadius: '6px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                cursor: 'pointer'
+                              }}
+                              title="Delete this order"
+                            >
+                              <Trash2 size={14} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           )}
 
@@ -1782,6 +1918,93 @@ export default function AdminDashboard({
                         value={settingsForm.instagramHandle}
                         onChange={(e) => setSettingsForm({ ...settingsForm, instagramHandle: e.target.value })}
                         style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* ======================================================== */}
+                  {/* LIVE UPI & CUSTOM SHOP QR CODE CONFIGURATION */}
+                  {/* ======================================================== */}
+                  <div
+                    style={{
+                      backgroundColor: '#f8fafc',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      border: '1.5px solid #e2e8f0',
+                      marginBottom: '24px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
+                      <div style={{ backgroundColor: 'rgba(0, 82, 204, 0.1)', padding: '6px', borderRadius: '6px', color: '#0052cc' }}>
+                        <CreditCard size={18} />
+                      </div>
+                      <div>
+                        <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#0f172a' }}>
+                          Live UPI Payments & Custom QR Code Setup
+                        </h4>
+                        <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: '#64748b' }}>
+                          Upload your shop's official GPay / PhonePe / Paytm UPI QR code or enter your UPI ID for direct scan payments
+                        </p>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#334155', marginBottom: '4px' }}>
+                          Store UPI ID (VPA) *
+                        </label>
+                        <input
+                          type="text"
+                          value={settingsForm.upiId || ''}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, upiId: e.target.value })}
+                          placeholder="e.g. 9758999617@upi or durgesh@okaxis"
+                          style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem', fontWeight: 600, color: '#0052cc' }}
+                        />
+                      </div>
+
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#334155', marginBottom: '4px' }}>
+                          Merchant / Account Name
+                        </label>
+                        <input
+                          type="text"
+                          value={settingsForm.upiAccountName || ''}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, upiAccountName: e.target.value })}
+                          placeholder="Durgesh Collection"
+                          style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Custom Store QR Code Photo Upload */}
+                    <div style={{ marginBottom: '16px' }}>
+                      <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#334155', marginBottom: '6px' }}>
+                        Upload Custom Merchant QR Code Image (GPay / PhonePe / Paytm / Shop Scanner)
+                      </label>
+                      <ImageUploadField
+                        label="Upload UPI QR Code Image"
+                        value={settingsForm.customQrImage || ''}
+                        onChange={(url) => setSettingsForm({ ...settingsForm, customQrImage: url })}
+                        aspectRatio="square"
+                        helperText="Upload your real store UPI QR code scanner image"
+                      />
+                    </div>
+
+                    {/* Enable COD Option */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#ffffff', padding: '12px 16px', borderRadius: '8px', border: '1px solid #cbd5e1' }}>
+                      <div>
+                        <span style={{ fontSize: '0.82rem', fontWeight: 800, color: '#0f172a', display: 'block' }}>
+                          Accept Cash on Delivery (COD)
+                        </span>
+                        <span style={{ fontSize: '0.74rem', color: '#64748b' }}>
+                          Allow customers across India to pay in cash or QR scan at the time of doorstep delivery
+                        </span>
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={settingsForm.enableCod !== false}
+                        onChange={(e) => setSettingsForm({ ...settingsForm, enableCod: e.target.checked })}
+                        style={{ width: '18px', height: '18px', cursor: 'pointer', accentColor: '#059669' }}
                       />
                     </div>
                   </div>

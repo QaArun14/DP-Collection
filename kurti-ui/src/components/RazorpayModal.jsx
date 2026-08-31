@@ -22,7 +22,8 @@ export default function RazorpayModal({
   onClose,
   amount,
   orderDetails,
-  onSuccess
+  onSuccess,
+  storeSettings = {}
 }) {
   if (!isOpen) return null;
 
@@ -40,6 +41,7 @@ export default function RazorpayModal({
   // Payment Options State
   const [activeTab, setActiveTab] = useState('upi'); // 'upi', 'card', 'netbanking', 'cod'
   const [upiId, setUpiId] = useState('');
+  const [utrNumber, setUtrNumber] = useState('');
   const [cardNumber, setCardNumber] = useState('');
   const [expiry, setExpiry] = useState('');
   const [cvv, setCvv] = useState('');
@@ -49,49 +51,14 @@ export default function RazorpayModal({
   const [isSuccess, setIsSuccess] = useState(false);
   const [processingMethod, setProcessingMethod] = useState('');
 
-  // Auto-sync cardholder name when customer enters name
-  useEffect(() => {
-    if (customerName && !cardHolder) {
-      setCardHolder(customerName);
-    }
-  }, [customerName, cardHolder]);
-
-  // Card formatting
-  const handleCardNumberChange = (e) => {
-    const raw = e.target.value.replace(/\D/g, '').slice(0, 16);
-    const formatted = raw.replace(/(\d{4})(?=\d)/g, '$1 ');
-    setCardNumber(formatted);
-  };
-
-  const handleExpiryChange = (e) => {
-    let raw = e.target.value.replace(/\D/g, '').slice(0, 4);
-    if (raw.length >= 2) {
-      raw = raw.slice(0, 2) + '/' + raw.slice(2);
-    }
-    setExpiry(raw);
-  };
-
-  // Detect card brand
-  const getCardBrand = () => {
-    const cleaned = cardNumber.replace(/\s/g, '');
-    if (cleaned.startsWith('4')) return { brand: 'VISA', color: '#1a1f71' };
-    if (cleaned.startsWith('51') || cleaned.startsWith('52') || cleaned.startsWith('53') || cleaned.startsWith('54') || cleaned.startsWith('55') || cleaned.startsWith('22')) {
-      return { brand: 'Mastercard', color: '#eb001b' };
-    }
-    if (cleaned.startsWith('60') || cleaned.startsWith('65') || cleaned.startsWith('81') || cleaned.startsWith('82')) {
-      return { brand: 'RuPay', color: '#0070ba' };
-    }
-    if (cleaned.startsWith('34') || cleaned.startsWith('37')) {
-      return { brand: 'AMEX', color: '#007bc1' };
-    }
-    return null;
-  };
-
   // Real UPI Payload & QR Code URL
   const orderId = orderDetails?.orderId || `DC-ORD-${Math.floor(100000 + Math.random() * 900000)}`;
-  const storeUpi = '9758999617@upi';
-  const upiPayload = `upi://pay?pa=${storeUpi}&pn=Durgesh%20Collection&am=${amount}&cu=INR&tn=Order%20${orderId}`;
-  const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=6&data=${encodeURIComponent(upiPayload)}`;
+  const storeUpi = storeSettings?.upiId || '9758999617@upi';
+  const merchantName = storeSettings?.upiAccountName || storeSettings?.storeName || 'Durgesh Collection';
+  const upiPayload = `upi://pay?pa=${storeUpi}&pn=${encodeURIComponent(merchantName)}&am=${amount}&cu=INR&tn=Order%20${orderId}`;
+  
+  // If admin uploaded a custom QR code photo, use that directly; otherwise generate live dynamic QR
+  const qrCodeUrl = storeSettings?.customQrImage || `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=6&data=${encodeURIComponent(upiPayload)}`;
 
   const handleProceedToPayment = (e) => {
     e.preventDefault();
@@ -565,8 +532,8 @@ export default function RazorpayModal({
                         {/* Dynamic Scannable UPI QR Image */}
                         <div
                           style={{
-                            width: '120px',
-                            height: '120px',
+                            width: '130px',
+                            height: '130px',
                             backgroundColor: '#ffffff',
                             borderRadius: '10px',
                             padding: '6px',
@@ -579,74 +546,79 @@ export default function RazorpayModal({
                         >
                           <img
                             src={qrCodeUrl}
-                            alt="Durgesh Collection Real UPI QR Code"
+                            alt="Durgesh Collection Live UPI QR Code"
                             style={{ width: '100%', height: '100%', objectFit: 'contain' }}
                           />
                         </div>
 
-                        <div style={{ flex: 1, minWidth: '180px' }}>
-                          <span style={{ fontSize: '0.85rem', fontWeight: 800, color: '#0f172a', display: 'block' }}>
-                            Durgesh Collection UPI
+                        <div style={{ flex: 1, minWidth: '190px' }}>
+                          <span style={{ fontSize: '0.88rem', fontWeight: 800, color: '#0f172a', display: 'block' }}>
+                            {merchantName}
                           </span>
-                          <span style={{ fontSize: '0.75rem', color: '#64748b', display: 'block', marginTop: '2px' }}>
-                            UPI ID: <strong style={{ color: '#0052cc' }}>{storeUpi}</strong>
-                          </span>
-                          <span style={{ fontSize: '0.75rem', color: '#16a34a', fontWeight: 700, display: 'block', marginTop: '2px' }}>
-                            Amount: ₹{amount?.toLocaleString()}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '3px' }}>
+                            <span style={{ fontSize: '0.78rem', color: '#64748b' }}>
+                              UPI ID: <strong style={{ color: '#0052cc' }}>{storeUpi}</strong>
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                navigator.clipboard?.writeText(storeUpi);
+                                alert(`UPI ID ${storeUpi} copied to clipboard!`);
+                              }}
+                              style={{
+                                backgroundColor: '#f1f5f9',
+                                border: '1px solid #cbd5e1',
+                                borderRadius: '4px',
+                                padding: '2px 6px',
+                                fontSize: '0.68rem',
+                                fontWeight: 700,
+                                color: '#334155',
+                                cursor: 'pointer'
+                              }}
+                            >
+                              Copy
+                            </button>
+                          </div>
+                          <span style={{ fontSize: '0.82rem', color: '#16a34a', fontWeight: 800, display: 'block', marginTop: '4px' }}>
+                            Amount to Pay: ₹{amount?.toLocaleString()}
                           </span>
 
-                          <div style={{ display: 'flex', gap: '6px', marginTop: '8px', flexWrap: 'wrap' }}>
+                          <div style={{ display: 'flex', gap: '8px', marginTop: '10px', flexWrap: 'wrap' }}>
                             <a
                               href={upiPayload}
                               style={{
                                 textDecoration: 'none',
                                 backgroundColor: '#2563eb',
                                 color: '#ffffff',
-                                padding: '6px 12px',
+                                padding: '7px 14px',
                                 borderRadius: '6px',
-                                fontSize: '0.74rem',
+                                fontSize: '0.76rem',
                                 fontWeight: 700,
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: '4px'
+                                gap: '5px'
                               }}
                             >
                               ⚡ Open in UPI App
                             </a>
-
-                            <button
-                              onClick={() => handleCompletePayment('UPI QR Scan')}
-                              style={{
-                                backgroundColor: '#059669',
-                                color: '#ffffff',
-                                border: 'none',
-                                padding: '6px 12px',
-                                borderRadius: '6px',
-                                fontSize: '0.74rem',
-                                fontWeight: 700,
-                                cursor: 'pointer'
-                              }}
-                            >
-                              ✓ I Have Scanned & Paid
-                            </button>
                           </div>
                         </div>
                       </div>
 
-                      {/* Manual UPI ID Input */}
+                      {/* Optional UTR / Reference ID & Confirm Payment */}
                       <div style={{ marginBottom: '14px' }}>
                         <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: '#475569', marginBottom: '4px' }}>
-                          Or Enter Your Personal UPI ID (VPA):
+                          Enter 12-Digit UTR / Transaction Ref No (Optional):
                         </label>
-                        <div style={{ display: 'flex', gap: '6px' }}>
+                        <div style={{ display: 'flex', gap: '8px' }}>
                           <input
                             type="text"
-                            placeholder="e.g. yourname@oksbi / 9876543210@paytm"
-                            value={upiId}
-                            onChange={(e) => setUpiId(e.target.value)}
+                            placeholder="e.g. 423871928374 or GPay Ref"
+                            value={utrNumber}
+                            onChange={(e) => setUtrNumber(e.target.value)}
                             style={{
                               flex: 1,
-                              padding: '9px 12px',
+                              padding: '10px 12px',
                               borderRadius: '6px',
                               border: '1px solid #cbd5e1',
                               fontSize: '0.84rem',
@@ -654,19 +626,26 @@ export default function RazorpayModal({
                             }}
                           />
                           <button
-                            onClick={() => handleCompletePayment(`UPI ID (${upiId || storeUpi})`)}
+                            onClick={() =>
+                              handleCompletePayment(
+                                utrNumber.trim() ? `UPI QR (UTR: ${utrNumber.trim()})` : 'UPI QR Scan'
+                              )
+                            }
                             style={{
-                              backgroundColor: '#0052cc',
+                              backgroundColor: '#059669',
                               color: '#ffffff',
                               border: 'none',
-                              padding: '9px 16px',
+                              padding: '10px 18px',
                               borderRadius: '6px',
                               fontWeight: 700,
-                              fontSize: '0.82rem',
-                              cursor: 'pointer'
+                              fontSize: '0.84rem',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '6px'
                             }}
                           >
-                            Verify & Pay ₹{amount?.toLocaleString()}
+                            ✓ Confirm Payment
                           </button>
                         </div>
                       </div>

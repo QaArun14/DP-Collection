@@ -171,16 +171,49 @@ export async function apiCreateOrder(order) {
   return order;
 }
 
-export async function apiUpdateOrderStatus(orderId, status) {
+export async function apiUpdateOrderStatus(orderId, status, trackingNumber = '', courierPartner = '') {
   try {
-    await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
+    const res = await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ status })
+      body: JSON.stringify({ status, trackingNumber, courierPartner })
     });
+    if (res.ok) return await res.json();
   } catch (e) {
     console.error('Error updating order status in database', e);
   }
+}
+
+export async function apiDeleteOrder(orderId) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/orders/${orderId}`, { method: 'DELETE' });
+    return res.ok;
+  } catch (e) {
+    console.error('Error deleting order from database', e);
+    return false;
+  }
+}
+
+export async function apiClearAllOrders() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/orders`, { method: 'DELETE' });
+    return res.ok;
+  } catch (e) {
+    console.error('Error clearing orders from database', e);
+    return false;
+  }
+}
+
+export async function apiTrackOrder(query) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/orders/track/${encodeURIComponent(query)}`);
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (e) {
+    console.warn('Error tracking order', e);
+  }
+  return { success: false, message: 'Could not connect to tracking server' };
 }
 
 // ==========================================

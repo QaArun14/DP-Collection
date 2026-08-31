@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, CheckCircle2, ShieldCheck, Heart, Sparkles } from 'lucide-react';
 
-export default function Footer({ onCategoryClick, storeSettings, onOpenAdmin }) {
+export default function Footer({ onCategoryClick, storeSettings, onOpenAdmin, onOpenTrackOrder }) {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -195,7 +195,12 @@ export default function Footer({ onCategoryClick, storeSettings, onOpenAdmin }) 
               Customer Care
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.85rem', color: '#a8a29e' }}>
-              <span style={{ cursor: 'pointer' }}>Track Your Order</span>
+              <span
+                onClick={onOpenTrackOrder}
+                style={{ cursor: 'pointer', color: '#93c5fd', fontWeight: 600 }}
+              >
+                🚚 Track Your Order
+              </span>
               <span style={{ cursor: 'pointer' }}>Size Guide & Measurement Chart</span>
               <span style={{ cursor: 'pointer' }}>7-Day Easy Exchange Policy</span>
               <span style={{ cursor: 'pointer' }}>Shipping & COD Guidelines</span>
