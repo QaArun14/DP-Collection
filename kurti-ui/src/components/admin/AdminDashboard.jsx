@@ -102,7 +102,7 @@ export default function AdminDashboard({
   }, [landingContent]);
 
   // Admin Credentials form state
-  const [authForm, setAuthForm] = useState({ username: 'admin@durgeshcollection.in', password: 'admin@123' });
+  const [authForm, setAuthForm] = useState({ username: 'admin@durgeshcollection.in', password: '' });
   const [authSaved, setAuthSaved] = useState(false);
 
   const handleSaveLanding = async (e) => {

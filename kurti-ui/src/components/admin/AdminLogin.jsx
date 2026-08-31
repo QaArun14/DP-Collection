@@ -18,14 +18,8 @@ export default function AdminLogin({ onLoginSuccess, onBackToStore }) {
       setAdminLoggedIn(true);
       onLoginSuccess();
     } else {
-      setErrorMsg('Invalid Login ID or Password. Please try again or use default demo credentials.');
+      setErrorMsg('Invalid Login ID or Password. Access denied.');
     }
-  };
-
-  const handleFillDemo = () => {
-    setUsername('admin@durgeshcollection.in');
-    setPassword('admin@123');
-    setErrorMsg('');
   };
 
   return (
@@ -208,7 +202,7 @@ export default function AdminLogin({ onLoginSuccess, onBackToStore }) {
               padding: '12px',
               fontSize: '0.92rem',
               borderRadius: '10px',
-              marginBottom: '16px',
+              marginBottom: '20px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -219,41 +213,24 @@ export default function AdminLogin({ onLoginSuccess, onBackToStore }) {
           </button>
         </form>
 
-        {/* Demo Quick-Fill Credentials Box */}
+        {/* Secure Access Indicator */}
         <div
           style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '8px',
+            color: '#64748b',
+            fontSize: '0.75rem',
+            marginBottom: '20px',
+            padding: '8px',
             backgroundColor: '#0f172a',
-            borderRadius: '12px',
-            padding: '12px 14px',
-            border: '1px dashed #334155',
-            marginBottom: '20px'
+            borderRadius: '8px',
+            border: '1px solid #334155'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
-            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#fef08a', display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <KeyRound size={13} /> Default Login Credentials:
-            </span>
-            <button
-              type="button"
-              onClick={handleFillDemo}
-              style={{
-                backgroundColor: 'rgba(212, 175, 55, 0.2)',
-                color: '#fef08a',
-                border: '1px solid #d4af37',
-                padding: '2px 8px',
-                borderRadius: '4px',
-                fontSize: '0.7rem',
-                fontWeight: 700,
-                cursor: 'pointer'
-              }}
-            >
-              1-Click Fill
-            </button>
-          </div>
-          <div style={{ fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.5 }}>
-            ID: <strong style={{ color: '#ffffff' }}>admin@durgeshcollection.in</strong> (or <strong style={{ color: '#ffffff' }}>admin</strong>)<br />
-            Password: <strong style={{ color: '#ffffff' }}>admin@123</strong>
-          </div>
+          <ShieldCheck size={15} color="#10b981" />
+          <span>Restricted Portal • Authorized Admin Personnel Only</span>
         </div>
 
         {/* Back to Storefront Link */}
