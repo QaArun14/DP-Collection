@@ -1,7 +1,8 @@
 {
   "products": [
     {
-      "id": 1,
+      "_id": "6a89e6115918c41956d53240",
+      "id": "1",
       "name": "Gulmohar Jaipuri Handblock Mulmul Kurti",
       "category": "straight",
       "tag": "Bestseller",
@@ -25,7 +26,7 @@
         "XL",
         "XXL"
       ],
-      "primaryImage": "http://localhost:5000/uploads/kurti-1787410397471-294781.webp",
+      "primaryImage": "https://dp-collection-h2g3.onrender.com/uploads/kurti-1787472653614-418431.webp",
       "secondaryImage": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
       "description": "Crafted from whisper-soft 100% pure mulmul cotton, this straight silhouette kurti features timeless floral handblock motifs in rich vermilion and desert gold.",
       "washCare": "Gentle hand wash in cold water with mild detergent.",
@@ -41,47 +42,15 @@
           "hex": "#ca8a04",
           "image": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80"
         }
-      ]
-    },
-    {
-      "id": 2,
-      "name": "Noor Chanderi Silk Flared Anarkali Kurta",
-      "category": "anarkali",
-      "tag": "Trending",
-      "badgeColor": "bg-amber-800",
-      "price": 2499,
-      "originalPrice": 4999,
-      "discount": "50% OFF",
-      "rating": 4.9,
-      "reviewCount": 94,
-      "fabric": "Chanderi Silk with Cotton Lining",
-      "craft": "Zari Zardozi Neckline Work",
-      "fit": "32-Kalidar Flared Anarkali",
-      "neckline": "Angrakha Overlap Style",
-      "sleeves": "Full Sleeves with Zari Border",
-      "stock": 8,
-      "sizes": [
-        "S",
-        "M",
-        "L",
-        "XL",
-        "XXL"
       ],
-      "primaryImage": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
-      "secondaryImage": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
-      "description": "Turn heads at festivities with this regal 32-panel Anarkali spun from lustrous Chanderi silk.",
-      "washCare": "Dry clean recommended for silk preservation.",
-      "isFeatured": true,
-      "colors": [
-        {
-          "name": "Emerald Royal",
-          "hex": "#064e3b",
-          "image": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80"
-        }
-      ]
+      "__v": 0,
+      "createdAt": "2026-08-22T18:10:25.887Z",
+      "updatedAt": "2026-08-23T08:10:56.272Z",
+      "images": []
     },
     {
-      "id": 3,
+      "_id": "6a89e6115918c41956d53242",
+      "id": "3",
       "name": "Kashvi Modal Silk Straight Kurta Pant Set",
       "category": "sets",
       "tag": "Festive Pick",
@@ -117,10 +86,14 @@
           "hex": "#1e1b4b",
           "image": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80"
         }
-      ]
+      ],
+      "__v": 0,
+      "createdAt": "2026-08-22T18:10:25.889Z",
+      "updatedAt": "2026-08-22T18:10:25.889Z"
     },
     {
-      "id": 4,
+      "_id": "6a89e6115918c41956d53243",
+      "id": "4",
       "name": "Aafreen Chikankari Georgette Long Kurti",
       "category": "straight",
       "tag": "Handcrafted",
@@ -154,11 +127,176 @@
           "hex": "#c084fc",
           "image": "https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=800&q=80"
         }
-      ]
+      ],
+      "__v": 0,
+      "createdAt": "2026-08-22T18:10:25.889Z",
+      "updatedAt": "2026-08-22T18:10:25.889Z"
+    },
+    {
+      "_id": "6a89e6115918c41956d53241",
+      "id": "2",
+      "name": "Noor Chanderi Silk Flared Anarkali Kurta",
+      "category": "anarkali",
+      "tag": "Trending",
+      "badgeColor": "bg-amber-800",
+      "price": 2499,
+      "originalPrice": 4999,
+      "discount": "50% OFF",
+      "rating": 4.9,
+      "reviewCount": 94,
+      "fabric": "Chanderi Silk with Cotton Lining",
+      "craft": "Zari Zardozi Neckline Work",
+      "fit": "32-Kalidar Flared Anarkali",
+      "neckline": "Angrakha Overlap Style",
+      "sleeves": "Full Sleeves with Zari Border",
+      "stock": 8,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL",
+        "XXL"
+      ],
+      "primaryImage": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
+      "secondaryImage": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
+      "description": "Turn heads at festivities with this regal 32-panel Anarkali spun from lustrous Chanderi silk.",
+      "washCare": "Dry clean recommended for silk preservation.",
+      "isFeatured": true,
+      "colors": [
+        {
+          "name": "Emerald Royal",
+          "hex": "#064e3b",
+          "image": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80"
+        }
+      ],
+      "__v": 0,
+      "createdAt": "2026-08-22T18:10:25.889Z",
+      "updatedAt": "2026-08-22T18:10:25.889Z"
+    },
+    {
+      "_id": "6a8abe084154dfcbeb4f7dfe",
+      "id": "1787477448033",
+      "__v": 0,
+      "badgeColor": "bg-rose-900",
+      "category": "straight",
+      "colors": [
+        {
+          "name": "Red",
+          "hex": "#881337",
+          "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
+        }
+      ],
+      "craft": "Handblock Print",
+      "createdAt": "2026-08-23T09:31:52.716Z",
+      "description": "Handcrafted luxury ethnic kurti crafted from breathable pure cotton fabric.",
+      "discount": "29% OFF",
+      "fabric": "100% Pure Cotton",
+      "fit": "Straight Regular Fit",
+      "isFeatured": false,
+      "name": "Kurti",
+      "neckline": "Round Neck",
+      "originalPrice": 1400,
+      "price": 999,
+      "primaryImage": "https://dp-collection-h2g3.onrender.com/uploads/kurti-1787489323352-62199.webp",
+      "rating": 4.8,
+      "reviewCount": 1,
+      "secondaryImage": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "sleeves": "3/4th Sleeves",
+      "stock": 12,
+      "tag": "New Arrival",
+      "updatedAt": "2026-08-23T12:48:47.101Z",
+      "washCare": "Hand wash in cold water.",
+      "images": []
+    },
+    {
+      "_id": "6a8f274dc2233f7f826f6300",
+      "id": "1787766122506",
+      "name": "Red Embellished Straight Kurta ",
+      "category": "straight",
+      "tag": "Trending ",
+      "badgeColor": "bg-rose-900",
+      "price": 399,
+      "originalPrice": 999,
+      "discount": "60% OFF",
+      "rating": 4.8,
+      "reviewCount": 1,
+      "fabric": "100% Pure Cotton",
+      "craft": "Textured Embellished ",
+      "fit": "Straight Regular Fit",
+      "neckline": "Square Neck",
+      "sleeves": "3/4th Sleeves",
+      "stock": 100,
+      "sizes": [
+        "S",
+        "M",
+        "L",
+        "XL"
+      ],
+      "primaryImage": "https://dp-collection-h2g3.onrender.com/uploads/kurti-1787766498072-691615.jpeg",
+      "secondaryImage": "https://dp-collection-h2g3.onrender.com/uploads/kurti-1787766568516-568832.jpeg",
+      "description": "Handcrafted luxury ethnic kurti crafted from breathable pure cotton fabric.",
+      "washCare": "Hand wash in cold water.",
+      "isFeatured": false,
+      "colors": [
+        {
+          "name": "Red",
+          "hex": "#881337",
+          "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
+        }
+      ],
+      "createdAt": "2026-08-26T17:50:05.411Z",
+      "updatedAt": "2026-08-26T17:50:05.411Z",
+      "__v": 0,
+      "images": []
+    }
+  ],
+  "reviews": [
+    {
+      "_id": "6a89e63da91e73862cf30a8e",
+      "id": "2",
+      "name": "Meera Patel",
+      "city": "Jaipur, RJ",
+      "rating": 5,
+      "title": "",
+      "review": "Wore the Noor Chanderi Anarkali to my cousin's sangeet and received non-stop compliments!",
+      "verified": true,
+      "date": "1 week ago",
+      "helpfulCount": 0,
+      "productName": "Noor Chanderi Silk Anarkali",
+      "productTitle": "",
+      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80",
+      "__v": 0,
+      "createdAt": "2026-08-22T18:11:09.642Z",
+      "updatedAt": "2026-08-22T18:11:09.642Z"
+    },
+    {
+      "_id": "6a89e63da91e73862cf30a8d",
+      "id": "1",
+      "name": "Radhika Sharma",
+      "city": "Agra, UP",
+      "rating": 5,
+      "title": "",
+      "review": "The Mulmul fabric is unbelievably soft for Agra heat! The handblock print and finishing are pure luxury.",
+      "verified": true,
+      "date": "2 days ago",
+      "helpfulCount": 0,
+      "productName": "Gulmohar Jaipuri Mulmul Kurti",
+      "productTitle": "",
+      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80",
+      "__v": 0,
+      "createdAt": "2026-08-22T18:11:09.641Z",
+      "updatedAt": "2026-08-22T18:11:09.641Z"
     }
   ],
   "orders": [
     {
+      "_id": "6a89e63da91e73862cf30a8f",
       "orderId": "DC-ORD-782190",
       "paymentId": "pay_test_98k21d",
       "customerName": "Ananya Deshmukh",
@@ -175,70 +313,354 @@
       ],
       "status": "New",
       "date": "2026-08-22 11:30 AM",
-      "paymentMethod": "Razorpay UPI"
-    }
-  ],
-  "reviews": [
-    {
-      "id": 1,
-      "name": "Radhika Sharma",
-      "city": "Agra, UP",
-      "rating": 5,
-      "verified": true,
-      "review": "The Mulmul fabric is unbelievably soft for Agra heat! The handblock print and finishing are pure luxury.",
-      "productName": "Gulmohar Jaipuri Mulmul Kurti",
-      "date": "2 days ago",
-      "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=150&q=80"
+      "paymentMethod": "Razorpay UPI",
+      "__v": 0,
+      "createdAt": "2026-08-22T18:11:09.836Z",
+      "updatedAt": "2026-08-22T18:11:09.836Z"
     },
     {
-      "id": 2,
-      "name": "Meera Patel",
-      "city": "Jaipur, RJ",
-      "rating": 5,
-      "verified": true,
-      "review": "Wore the Noor Chanderi Anarkali to my cousin's sangeet and received non-stop compliments!",
-      "productName": "Noor Chanderi Silk Anarkali",
-      "date": "1 week ago",
-      "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80"
+      "_id": "6a8ab98769e676ef073296a3",
+      "orderId": "DC-ORD-192477",
+      "paymentId": "pay_test_qqtxx898",
+      "customerName": "Priya Sharma",
+      "customerPhone": "919758999617",
+      "customerCity": "Agra, UP",
+      "total": 2249,
+      "items": [
+        {
+          "_id": "6a89e6115918c41956d53241",
+          "id": "2",
+          "name": "Noor Chanderi Silk Flared Anarkali Kurta",
+          "category": "anarkali",
+          "tag": "Trending",
+          "badgeColor": "bg-amber-800",
+          "price": 2499,
+          "originalPrice": 4999,
+          "discount": "50% OFF",
+          "rating": 4.9,
+          "reviewCount": 94,
+          "fabric": "Chanderi Silk with Cotton Lining",
+          "craft": "Zari Zardozi Neckline Work",
+          "fit": "32-Kalidar Flared Anarkali",
+          "neckline": "Angrakha Overlap Style",
+          "sleeves": "Full Sleeves with Zari Border",
+          "stock": 8,
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL"
+          ],
+          "primaryImage": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
+          "secondaryImage": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
+          "description": "Turn heads at festivities with this regal 32-panel Anarkali spun from lustrous Chanderi silk.",
+          "washCare": "Dry clean recommended for silk preservation.",
+          "isFeatured": true,
+          "colors": [
+            {
+              "name": "Emerald Royal",
+              "hex": "#064e3b",
+              "image": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80"
+            }
+          ],
+          "__v": 0,
+          "createdAt": "2026-08-22T18:10:25.889Z",
+          "updatedAt": "2026-08-22T18:10:25.889Z",
+          "selectedSize": "S",
+          "selectedColor": "Emerald Royal",
+          "quantity": 1
+        }
+      ],
+      "status": "New",
+      "date": "23/8/2026, 2:42:39 pm",
+      "paymentMethod": "Razorpay Verified",
+      "createdAt": "2026-08-23T09:12:39.772Z",
+      "updatedAt": "2026-08-23T09:12:39.772Z",
+      "__v": 0
+    },
+    {
+      "_id": "6a8aba8469e676ef073296a4",
+      "orderId": "DC-ORD-531702",
+      "paymentId": "pay_test_3var1etu",
+      "customerName": "Priya Sharma",
+      "customerPhone": "919758999617",
+      "customerCity": "Agra, UP",
+      "total": 2249,
+      "items": [
+        {
+          "_id": "6a89e6115918c41956d53241",
+          "id": "2",
+          "name": "Noor Chanderi Silk Flared Anarkali Kurta",
+          "category": "anarkali",
+          "tag": "Trending",
+          "badgeColor": "bg-amber-800",
+          "price": 2499,
+          "originalPrice": 4999,
+          "discount": "50% OFF",
+          "rating": 4.9,
+          "reviewCount": 94,
+          "fabric": "Chanderi Silk with Cotton Lining",
+          "craft": "Zari Zardozi Neckline Work",
+          "fit": "32-Kalidar Flared Anarkali",
+          "neckline": "Angrakha Overlap Style",
+          "sleeves": "Full Sleeves with Zari Border",
+          "stock": 8,
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL"
+          ],
+          "primaryImage": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
+          "secondaryImage": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
+          "description": "Turn heads at festivities with this regal 32-panel Anarkali spun from lustrous Chanderi silk.",
+          "washCare": "Dry clean recommended for silk preservation.",
+          "isFeatured": true,
+          "colors": [
+            {
+              "name": "Emerald Royal",
+              "hex": "#064e3b",
+              "image": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80"
+            }
+          ],
+          "__v": 0,
+          "createdAt": "2026-08-22T18:10:25.889Z",
+          "updatedAt": "2026-08-22T18:10:25.889Z",
+          "selectedSize": "S",
+          "selectedColor": "Emerald Royal",
+          "quantity": 1
+        }
+      ],
+      "status": "New",
+      "date": "23/8/2026, 2:46:51 pm",
+      "paymentMethod": "Razorpay Verified",
+      "createdAt": "2026-08-23T09:16:52.074Z",
+      "updatedAt": "2026-08-23T09:16:52.074Z",
+      "__v": 0
+    },
+    {
+      "_id": "6a8abe9769e676ef073296a6",
+      "orderId": "DC-ORD-287221",
+      "paymentId": "pay_cardendingin4444_xgwhg51",
+      "customerName": "Arun Pal",
+      "customerPhone": "7505098293",
+      "customerCity": "Agra",
+      "total": 899,
+      "items": [
+        {
+          "_id": "6a8abe084154dfcbeb4f7dfe",
+          "id": "1787477448033",
+          "__v": 0,
+          "badgeColor": "bg-rose-900",
+          "category": "straight",
+          "colors": [
+            {
+              "name": "Red",
+              "hex": "#881337",
+              "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
+            }
+          ],
+          "craft": "Handblock Print",
+          "createdAt": "2026-08-23T09:31:52.716Z",
+          "description": "Handcrafted luxury ethnic kurti crafted from breathable pure cotton fabric.",
+          "discount": "29% OFF",
+          "fabric": "100% Pure Cotton",
+          "fit": "Straight Regular Fit",
+          "isFeatured": false,
+          "name": "Kurti",
+          "neckline": "Round Neck",
+          "originalPrice": 1400,
+          "price": 999,
+          "primaryImage": "http://dp-collection-h2g3.onrender.com/uploads/kurti-1787477507778-733497.webp",
+          "rating": 4.8,
+          "reviewCount": 1,
+          "secondaryImage": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL"
+          ],
+          "sleeves": "3/4th Sleeves",
+          "stock": 12,
+          "tag": "New Arrival",
+          "updatedAt": "2026-08-23T09:31:52.716Z",
+          "washCare": "Hand wash in cold water.",
+          "selectedSize": "S",
+          "selectedColor": "Red",
+          "quantity": 1
+        }
+      ],
+      "status": "New",
+      "date": "23/8/2026, 3:04:15 pm",
+      "paymentMethod": "Card (ending in 4444)",
+      "customerAddress": "Bodla",
+      "customerPin": "202007",
+      "createdAt": "2026-08-23T09:34:15.835Z",
+      "updatedAt": "2026-08-23T09:34:15.835Z",
+      "__v": 0
+    },
+    {
+      "_id": "6a8be46f6c58e19cd585adc0",
+      "orderId": "DC-ORD-991342",
+      "paymentId": "pay_test_k6iwi04d",
+      "customerName": "Priya Sharma",
+      "customerPhone": "919758999617",
+      "customerCity": "Agra, UP",
+      "total": 2249,
+      "items": [
+        {
+          "_id": "6a89e6115918c41956d53241",
+          "id": "2",
+          "name": "Noor Chanderi Silk Flared Anarkali Kurta",
+          "category": "anarkali",
+          "tag": "Trending",
+          "badgeColor": "bg-amber-800",
+          "price": 2499,
+          "originalPrice": 4999,
+          "discount": "50% OFF",
+          "rating": 4.9,
+          "reviewCount": 94,
+          "fabric": "Chanderi Silk with Cotton Lining",
+          "craft": "Zari Zardozi Neckline Work",
+          "fit": "32-Kalidar Flared Anarkali",
+          "neckline": "Angrakha Overlap Style",
+          "sleeves": "Full Sleeves with Zari Border",
+          "stock": 8,
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL",
+            "XXL"
+          ],
+          "primaryImage": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80",
+          "secondaryImage": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80",
+          "description": "Turn heads at festivities with this regal 32-panel Anarkali spun from lustrous Chanderi silk.",
+          "washCare": "Dry clean recommended for silk preservation.",
+          "isFeatured": true,
+          "colors": [
+            {
+              "name": "Emerald Royal",
+              "hex": "#064e3b",
+              "image": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80"
+            }
+          ],
+          "__v": 0,
+          "createdAt": "2026-08-22T18:10:25.889Z",
+          "updatedAt": "2026-08-22T18:10:25.889Z",
+          "selectedSize": "S",
+          "selectedColor": "Emerald Royal",
+          "quantity": 1
+        }
+      ],
+      "status": "New",
+      "date": "24/08/2026, 11:57:58",
+      "paymentMethod": "Razorpay Verified",
+      "createdAt": "2026-08-24T06:27:59.214Z",
+      "updatedAt": "2026-08-24T06:27:59.214Z",
+      "__v": 0
+    },
+    {
+      "_id": "6a8f2ad6c2233f7f826f6301",
+      "orderId": "DC-ORD-566467",
+      "paymentId": "pay_netbankinghdfcbank_apekpgt",
+      "customerName": "Dp",
+      "customerPhone": "6395532395",
+      "customerCity": "AGRA",
+      "total": 798,
+      "items": [
+        {
+          "_id": "6a8f274dc2233f7f826f6300",
+          "id": "1787766122506",
+          "name": "Red Embellished Straight Kurta ",
+          "category": "straight",
+          "tag": "Trending ",
+          "badgeColor": "bg-rose-900",
+          "price": 399,
+          "originalPrice": 999,
+          "discount": "60% OFF",
+          "rating": 4.8,
+          "reviewCount": 1,
+          "fabric": "100% Pure Cotton",
+          "craft": "Textured Embellished ",
+          "fit": "Straight Regular Fit",
+          "neckline": "Square Neck",
+          "sleeves": "3/4th Sleeves",
+          "stock": 100,
+          "sizes": [
+            "S",
+            "M",
+            "L",
+            "XL"
+          ],
+          "primaryImage": "http://dp-collection-h2g3.onrender.com/uploads/kurti-1787766498072-691615.jpeg",
+          "secondaryImage": "http://dp-collection-h2g3.onrender.com/uploads/kurti-1787766568516-568832.jpeg",
+          "description": "Handcrafted luxury ethnic kurti crafted from breathable pure cotton fabric.",
+          "washCare": "Hand wash in cold water.",
+          "isFeatured": false,
+          "colors": [
+            {
+              "name": "Red",
+              "hex": "#881337",
+              "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80"
+            }
+          ],
+          "createdAt": "2026-08-26T17:50:05.411Z",
+          "updatedAt": "2026-08-26T17:50:05.411Z",
+          "__v": 0,
+          "selectedSize": "S",
+          "selectedColor": "Red",
+          "quantity": 2
+        }
+      ],
+      "status": "New",
+      "date": "26/08/2026, 23:35:07",
+      "paymentMethod": "Netbanking (HDFC Bank)",
+      "customerAddress": "13/145",
+      "customerPin": "282002",
+      "createdAt": "2026-08-26T18:05:10.009Z",
+      "updatedAt": "2026-08-26T18:05:10.009Z",
+      "__v": 0
     }
   ],
   "instaPosts": [
     {
-      "id": 1,
-      "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80",
+      "_id": "6a89e63ea91e73862cf30a90",
+      "id": "1",
       "handle": "@divya_sharma",
+      "caption": "",
+      "product": "Gulmohar Jaipuri Mulmul Kurti",
+      "image": "https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=400&q=80",
       "likes": "1.4k",
-      "product": "Gulmohar Jaipuri Mulmul Kurti"
+      "link": "#",
+      "__v": 0,
+      "createdAt": "2026-08-22T18:11:10.144Z",
+      "updatedAt": "2026-08-22T18:11:10.144Z"
     },
     {
-      "id": 2,
-      "image": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=400&q=80",
+      "_id": "6a89e63ea91e73862cf30a91",
+      "id": "2",
       "handle": "@priya.kapoor",
+      "caption": "",
+      "product": "Noor Chanderi Silk Anarkali",
+      "image": "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=400&q=80",
       "likes": "2.1k",
-      "product": "Noor Chanderi Silk Anarkali"
+      "link": "#",
+      "__v": 0,
+      "createdAt": "2026-08-22T18:11:10.145Z",
+      "updatedAt": "2026-08-22T18:11:10.145Z"
     }
   ],
   "coupons": {
-    "FESTIVE25": {
-      "code": "FESTIVE25",
-      "discountPercent": 25,
-      "minOrder": 999,
-      "description": "Flat 25% Off on Festive Collection"
-    },
-    "KURTI10": {
-      "code": "KURTI10",
-      "discountPercent": 10,
-      "minOrder": 0,
-      "description": "Extra 10% Off on all Kurtis"
-    },
-    "FIRSTBUY": {
-      "code": "FIRSTBUY",
-      "discountPercent": 15,
-      "minOrder": 499,
-      "description": "15% Off on your first order"
-    }
+    "FESTIVE25": {},
+    "FIRSTBUY": {},
+    "KURTI10": {}
   },
   "storeSettings": {
+    "_id": "6a89e63ea91e73862cf30a95",
     "storeName": "Durgesh Collection",
     "tagline": "Ethnic Elegance",
     "whatsappNumber": "919758999617",
@@ -246,20 +668,20 @@
     "email": "care@durgeshcollection.in",
     "address": "Sanjay Place, Agra, Uttar Pradesh, India",
     "announcementText": "🌸 FESTIVE UTSAV SALE: Get Flat 25% OFF with code FESTIVE25 | Free Delivery above ₹999 🚚",
-    "announcementPromoCode": "FESTIVE25",
     "freeShippingThreshold": 999,
-    "instagramHandle": "@durgesh_collection"
-  },
-  "adminAuth": {
-    "username": "admin@durgeshcollection.in",
-    "password": "admin@123"
+    "instagramHandle": "@durgesh_collection",
+    "announcementPromoCode": "FESTIVE25",
+    "createdAt": "2026-08-22T18:11:10.841Z",
+    "updatedAt": "2026-08-22T18:11:10.841Z",
+    "__v": 0
   },
   "landingContent": {
+    "_id": "6a89e63fa91e73862cf30a97",
     "hero": {
       "badge": "New Autumn / Festive Edition 2026",
       "title": "Handcrafted Grace for the Modern Indian Woman",
       "subtitle": "Experience the timeless charm of Jaipur Handblock prints, pure Chanderi silk Anarkalis, and breezy Mulmul cotton Kurtis. Tailored for comfort, celebrations, and everyday poise.",
-      "image": "http://localhost:5000/uploads/kurti-1787420115027-566943.webp",
+      "image": "http://dp-collection-h2g3.onrender.com/uploads/kurti-1787765836926-192662.jpeg",
       "exploreBtnText": "Explore Collection",
       "festiveBtnText": "Festive Silk Edit (Flat 50% Off)",
       "offerBadgeTitle": "Festive Utsav Edition",
@@ -267,7 +689,8 @@
       "offerBadgeTag": "Flat 48% Off",
       "ratingScore": "★ 4.9 / 5.0",
       "ratingText": "(15,000+ Happy Customers)",
-      "ratingSubtext": "Certified 100% Pure Organic Cotton & Handcrafted Silks"
+      "ratingSubtext": "Certified 100% Pure Organic Cotton & Handcrafted Silks",
+      "imageFit": "contain"
     },
     "categories": [
       {
@@ -313,6 +736,9 @@
       "image": "https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80",
       "badgeYears": "30+",
       "badgeText": "Years of Heritage Artisan Weaving"
-    }
+    },
+    "createdAt": "2026-08-22T18:11:11.505Z",
+    "updatedAt": "2026-08-26T17:37:42.482Z",
+    "__v": 0
   }
 }

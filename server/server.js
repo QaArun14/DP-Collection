@@ -9,7 +9,9 @@ const mongoose = require('mongoose');
 const app = express();
 app.set('trust proxy', true);
 const PORT = process.env.PORT || 5000;
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI =
+  process.env.MONGODB_URI ||
+  'mongodb+srv://annipal141297_db_user:Durgesh%40123@ecommerce-cluster.1bbswxm.mongodb.net/durgesh_collection?retryWrites=true&w=majority&appName=ecommerce-cluster';
 
 // Enable CORS & JSON body parser
 app.use(cors());
