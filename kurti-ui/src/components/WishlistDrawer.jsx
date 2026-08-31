@@ -97,8 +97,12 @@ export default function WishlistDrawer({
                   }}
                 >
                   <img
-                    src={product.primaryImage}
+                    src={product.primaryImage || product.images?.[0]}
                     alt={product.name}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80';
+                    }}
                     style={{
                       width: '74px',
                       height: '96px',

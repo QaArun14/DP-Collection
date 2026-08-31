@@ -26,8 +26,41 @@ if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }
 
-// Serve uploaded images statically
-app.use('/uploads', express.static(UPLOADS_DIR));
+// Persistent Cloud & Local Image Serving Handler
+const serveUploadedImage = async (req, res) => {
+  try {
+    const filename = req.params.filename;
+    const localPath = path.join(UPLOADS_DIR, filename);
+
+    // 1. If file exists on local disk, serve immediately
+    if (fs.existsSync(localPath)) {
+      return res.sendFile(localPath);
+    }
+
+    // 2. If missing from disk (e.g. after Render redeploy/restart), fetch from MongoDB Atlas!
+    if (isMongoConnected) {
+      const imgDoc = await UploadedImage.findOne({ filename });
+      if (imgDoc && imgDoc.data) {
+        // Re-cache to local disk for fast subsequent access
+        try {
+          fs.writeFileSync(localPath, imgDoc.data);
+        } catch (e) {}
+
+        res.set('Content-Type', imgDoc.contentType || 'image/jpeg');
+        res.set('Cache-Control', 'public, max-age=31536000');
+        return res.send(imgDoc.data);
+      }
+    }
+
+    // 3. Fallback redirect so image never breaks
+    res.redirect('https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80');
+  } catch (err) {
+    res.redirect('https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80');
+  }
+};
+
+app.get('/uploads/:filename', serveUploadedImage);
+app.get('/api/uploads/:filename', serveUploadedImage);
 
 // ==========================================
 // MONGOOSE SCHEMAS & MODELS
@@ -165,6 +198,18 @@ const LandingContentSchema = new mongoose.Schema(
   { timestamps: true, strict: false }
 );
 
+// Cloud Persistent Image Storage in MongoDB Atlas (Prevents image loss on Render restarts)
+const UploadedImageSchema = new mongoose.Schema(
+  {
+    filename: { type: String, required: true, unique: true, index: true },
+    contentType: { type: String, default: 'image/jpeg' },
+    data: { type: Buffer, required: true },
+    dataUrl: { type: String, default: '' },
+    size: { type: Number, default: 0 }
+  },
+  { timestamps: true, strict: false }
+);
+
 const Product = mongoose.model('Product', ProductSchema);
 const Order = mongoose.model('Order', OrderSchema);
 const Review = mongoose.model('Review', ReviewSchema);
@@ -173,6 +218,7 @@ const Coupon = mongoose.model('Coupon', CouponSchema);
 const StoreSetting = mongoose.model('StoreSetting', StoreSettingSchema);
 const AdminAuth = mongoose.model('AdminAuth', AdminAuthSchema);
 const LandingContent = mongoose.model('LandingContent', LandingContentSchema);
+const UploadedImage = mongoose.models.UploadedImage || mongoose.model('UploadedImage', UploadedImageSchema);
 
 // ==========================================
 // MONGODB CONNECTION & AUTOMATIC SEEDING
@@ -346,20 +392,85 @@ app.get('/api/db-status', async (req, res) => {
 });
 
 // ==========================================
-// 1. FILE UPLOAD ENDPOINT
+// 1. FILE & BASE64 IMAGE UPLOAD ENDPOINTS
 // ==========================================
-app.post('/api/upload', upload.single('image'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).json({ success: false, error: 'No image file uploaded' });
+app.post('/api/upload', upload.single('image'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, error: 'No image file uploaded' });
+    }
+
+    const fileBuffer = fs.readFileSync(req.file.path);
+    const filename = req.file.filename;
+    const contentType = req.file.mimetype || 'image/jpeg';
+
+    // Store directly in MongoDB Atlas Cloud Collection (survives all Render rebuilds)
+    if (isMongoConnected) {
+      try {
+        await UploadedImage.findOneAndUpdate(
+          { filename },
+          { filename, contentType, data: fileBuffer, size: req.file.size },
+          { upsert: true, new: true }
+        );
+      } catch (dbErr) {
+        console.error('Error saving image to MongoDB Atlas:', dbErr);
+      }
+    }
+
+    const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https' || (req.get('host') && req.get('host').includes('onrender.com'));
+    const protocol = isHttps ? 'https' : (req.protocol || 'http');
+    const fileUrl = `${protocol}://${req.get('host')}/uploads/${filename}`;
+
+    res.json({
+      success: true,
+      url: fileUrl,
+      filename: filename
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
-  const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https' || (req.get('host') && req.get('host').includes('onrender.com'));
-  const protocol = isHttps ? 'https' : (req.protocol || 'http');
-  const fileUrl = `${protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-  res.json({
-    success: true,
-    url: fileUrl,
-    filename: req.file.filename
-  });
+});
+
+app.post('/api/upload-base64', async (req, res) => {
+  try {
+    const { image, filename } = req.body;
+    if (!image) return res.status(400).json({ success: false, error: 'No image data provided' });
+
+    const uniqueFilename = filename || `kurti-${Date.now()}-${Math.round(Math.random() * 1e6)}.webp`;
+    const matches = image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+    let buffer;
+    let contentType = 'image/jpeg';
+
+    if (matches && matches.length === 3) {
+      contentType = matches[1];
+      buffer = Buffer.from(matches[2], 'base64');
+    } else {
+      buffer = Buffer.from(image, 'base64');
+    }
+
+    // Save to MongoDB Atlas
+    if (isMongoConnected) {
+      await UploadedImage.findOneAndUpdate(
+        { filename: uniqueFilename },
+        { filename: uniqueFilename, contentType, data: buffer, dataUrl: image, size: buffer.length },
+        { upsert: true, new: true }
+      );
+    }
+
+    // Write to disk cache
+    const localPath = path.join(UPLOADS_DIR, uniqueFilename);
+    try {
+      fs.writeFileSync(localPath, buffer);
+    } catch (e) {}
+
+    const isHttps = req.secure || req.headers['x-forwarded-proto'] === 'https' || (req.get('host') && req.get('host').includes('onrender.com'));
+    const protocol = isHttps ? 'https' : (req.protocol || 'http');
+    const fileUrl = `${protocol}://${req.get('host')}/uploads/${uniqueFilename}`;
+
+    res.json({ success: true, url: fileUrl, filename: uniqueFilename });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
 });
 
 // ==========================================
