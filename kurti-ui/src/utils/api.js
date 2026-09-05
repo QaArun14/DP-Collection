@@ -415,3 +415,40 @@ export async function apiUpdateLanding(landingContent) {
   }
   return landingContent;
 }
+
+// ==========================================
+// 9. RAZORPAY LIVE GATEWAY API
+// ==========================================
+export async function apiCreateRazorpayOrder(amount, receipt, notes = {}) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/create-razorpay-order`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount, receipt, notes })
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+    const err = await res.json().catch(() => ({}));
+    return { error: err.error || 'Failed to create Razorpay order' };
+  } catch (e) {
+    console.warn('Error creating Razorpay order', e);
+    return { error: e.message || 'Server connection failed' };
+  }
+}
+
+export async function apiVerifyRazorpayPayment(paymentData) {
+  try {
+    const res = await fetch(`${API_BASE_URL}/verify-razorpay-payment`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(paymentData)
+    });
+    if (res.ok) {
+      return await res.json();
+    }
+  } catch (e) {
+    console.warn('Error verifying Razorpay payment', e);
+  }
+  return { success: false };
+}

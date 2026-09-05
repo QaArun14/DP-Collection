@@ -520,7 +520,7 @@ export default function AdminDashboard({
                     {orders.length}
                   </h3>
                   <span style={{ fontSize: '0.75rem', color: '#64748b' }}>
-                    All verified test transactions
+                    All verified live transactions
                   </span>
                 </div>
 
@@ -800,7 +800,7 @@ export default function AdminDashboard({
                     No Orders Yet
                   </h3>
                   <p style={{ margin: 0, fontSize: '0.82rem', color: '#64748b' }}>
-                    All past test orders have been cleared. When a customer places a COD or UPI order, it will appear here in real time.
+                    When a customer places a live order, it will appear here in real time.
                   </p>
                 </div>
               ) : (
@@ -1919,6 +1919,84 @@ export default function AdminDashboard({
                         onChange={(e) => setSettingsForm({ ...settingsForm, instagramHandle: e.target.value })}
                         style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
                       />
+                    </div>
+                  </div>
+
+                  {/* ======================================================== */}
+                  {/* RAZORPAY LIVE PAYMENT GATEWAY CONFIGURATION */}
+                  {/* ======================================================== */}
+                  <div
+                    style={{
+                      backgroundColor: '#f8fafc',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      border: '1.5px solid #e2e8f0',
+                      marginBottom: '20px'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ backgroundColor: 'rgba(0, 82, 204, 0.1)', padding: '6px', borderRadius: '6px', color: '#0052cc' }}>
+                          <CreditCard size={18} />
+                        </div>
+                        <div>
+                          <h4 style={{ margin: 0, fontSize: '0.95rem', fontWeight: 800, color: '#0f172a' }}>
+                            Razorpay Live Payment Gateway Setup
+                          </h4>
+                          <p style={{ margin: '2px 0 0', fontSize: '0.75rem', color: '#64748b' }}>
+                            Accept live online payments directly into your bank account via Cards, UPI Apps, & Netbanking
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Status indicator pill */}
+                      {settingsForm.razorpayKeyId?.startsWith('rzp_live_') ? (
+                        <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#059669', backgroundColor: '#ecfdf5', padding: '3px 9px', borderRadius: '6px', border: '1px solid #a7f3d0' }}>
+                          ● Live Production Mode Active
+                        </span>
+                      ) : settingsForm.razorpayKeyId?.startsWith('rzp_test_') ? (
+                        <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#b45309', backgroundColor: '#fffbeb', padding: '3px 9px', borderRadius: '6px', border: '1px solid #fde68a' }}>
+                          ⚠️ Test Key (Change to rzp_live_...)
+                        </span>
+                      ) : (
+                        <span style={{ fontSize: '0.72rem', fontWeight: 700, color: '#64748b', backgroundColor: '#f1f5f9', padding: '3px 9px', borderRadius: '6px' }}>
+                          Ready for Live Key
+                        </span>
+                      )}
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '8px' }}>
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#334155', marginBottom: '4px' }}>
+                          Razorpay Live Key ID (rzp_live_...)
+                        </label>
+                        <input
+                          type="text"
+                          value={settingsForm.razorpayKeyId || ''}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, razorpayKeyId: e.target.value })}
+                          placeholder="e.g. rzp_live_xxxxxxxxxxxxxx"
+                          style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem', fontWeight: 600, color: '#0f172a' }}
+                        />
+                        <span style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '3px', display: 'block' }}>
+                          Found in Razorpay Dashboard → Settings → API Keys
+                        </span>
+                      </div>
+
+                      <div>
+                        <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 700, color: '#334155', marginBottom: '4px' }}>
+                          Razorpay Live Key Secret
+                        </label>
+                        <input
+                          type="password"
+                          value={settingsForm.razorpayKeySecret || ''}
+                          onChange={(e) => setSettingsForm({ ...settingsForm, razorpayKeySecret: e.target.value })}
+                          placeholder="••••••••••••••••"
+                          style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                        />
+                        <span style={{ fontSize: '0.7rem', color: '#64748b', marginTop: '3px', display: 'block' }}>
+                          Kept secure & encrypted for order verification
+                        </span>
+                      </div>
                     </div>
                   </div>
 

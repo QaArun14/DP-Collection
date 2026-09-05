@@ -288,7 +288,7 @@ function App() {
     });
   };
 
-  // Handle successful Razorpay test payment with real customer details
+  // Handle successful live Razorpay / UPI / COD payment with real customer details
   const handleRazorpaySuccess = (paymentId, customerDetails = {}) => {
     if (!razorpayModalData) return;
 

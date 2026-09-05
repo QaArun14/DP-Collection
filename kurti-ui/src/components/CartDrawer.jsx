@@ -386,7 +386,7 @@ export default function CartDrawer({
 
             {/* Checkout Action Buttons */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {/* Razorpay Test Mode Payment Button */}
+              {/* Razorpay Live Payment Gateway Button */}
               <button
                 onClick={() => {
                   if (onRazorpayPay) {

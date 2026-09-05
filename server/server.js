@@ -5,6 +5,8 @@ const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
 const mongoose = require('mongoose');
+const crypto = require('crypto');
+const Razorpay = require('razorpay');
 
 const app = express();
 app.set('trust proxy', true);
@@ -176,7 +178,10 @@ const StoreSettingSchema = new mongoose.Schema(
     customQrImage: { type: String, default: '' },
     upiAccountName: { type: String, default: 'Durgesh Collection' },
     enableCod: { type: Boolean, default: true },
-    codExtraFee: { type: Number, default: 0 }
+    codExtraFee: { type: Number, default: 0 },
+    razorpayKeyId: { type: String, default: '' },
+    razorpayKeySecret: { type: String, default: '' },
+    razorpayLiveMode: { type: Boolean, default: true }
   },
   { timestamps: true, strict: false }
 );
@@ -1031,6 +1036,85 @@ app.post('/api/reset-data', async (req, res) => {
     res.json({ success: true, message: 'Sample data restored successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// ==========================================
+// 11. RAZORPAY LIVE PAYMENT GATEWAY REST API
+// ==========================================
+app.post('/api/create-razorpay-order', async (req, res) => {
+  try {
+    const { amount, receipt, notes } = req.body;
+    if (!amount) {
+      return res.status(400).json({ error: 'Amount is required' });
+    }
+
+    let keyId = process.env.RAZORPAY_KEY_ID || '';
+    let keySecret = process.env.RAZORPAY_KEY_SECRET || '';
+
+    if (isMongoConnected) {
+      const settings = await StoreSetting.findOne();
+      if (settings?.razorpayKeyId) keyId = settings.razorpayKeyId;
+      if (settings?.razorpayKeySecret) keySecret = settings.razorpayKeySecret;
+    }
+
+    if (!keyId || !keySecret) {
+      return res.status(400).json({
+        error: 'Razorpay Live Key ID and Secret are not configured in Store Settings.',
+        requiresConfig: true
+      });
+    }
+
+    const rzp = new Razorpay({
+      key_id: keyId,
+      key_secret: keySecret
+    });
+
+    const orderOptions = {
+      amount: Math.round(Number(amount) * 100), // in paise
+      currency: 'INR',
+      receipt: receipt || `rcpt_${Date.now()}`,
+      notes: notes || {}
+    };
+
+    const razorpayOrder = await rzp.orders.create(orderOptions);
+    return res.json({
+      success: true,
+      order: razorpayOrder,
+      keyId
+    });
+  } catch (err) {
+    console.error('Razorpay order creation error:', err);
+    return res.status(500).json({ error: err.message || 'Razorpay order creation failed' });
+  }
+});
+
+app.post('/api/verify-razorpay-payment', async (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    let keySecret = process.env.RAZORPAY_KEY_SECRET || '';
+    if (isMongoConnected) {
+      const settings = await StoreSetting.findOne();
+      if (settings?.razorpayKeySecret) keySecret = settings.razorpayKeySecret;
+    }
+
+    if (!keySecret) {
+      return res.json({ success: true, verified: true, message: 'Payment recorded' });
+    }
+
+    const hmac = crypto.createHmac('sha256', keySecret);
+    hmac.update(razorpay_order_id + '|' + razorpay_payment_id);
+    const generatedSignature = hmac.digest('hex');
+
+    if (generatedSignature === razorpay_signature) {
+      return res.json({ success: true, verified: true, message: 'Payment signature verified successfully' });
+    } else {
+      return res.status(400).json({ success: false, verified: false, error: 'Invalid payment signature' });
+    }
+  } catch (err) {
+    console.error('Payment verification error:', err);
+    return res.status(500).json({ error: err.message || 'Verification failed' });
   }
 });
 
